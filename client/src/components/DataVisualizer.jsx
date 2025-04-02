@@ -13,11 +13,14 @@ const DataVisualizer = () => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedChart, setSelectedChart] = useState(null);
-  const [chartData, setChartData] = useState(null);
+  const [availableCharts, setAvailableCharts] = useState([]);
+  const [selectedChartIds, setSelectedChartIds] = useState([]);
   const [filterColumn, setFilterColumn] = useState('');
   const [filterValue, setFilterValue] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const [chartLayout, setChartLayout] = useState('grid'); // 'grid' or 'full'
+  const [chartSizeIndex, setChartSizeIndex] = useState(1); // 0: small, 1: medium, 2: large
+  const chartSizes = ['400px', '500px', '600px'];
   const chartContainerRef = useRef(null);
 
   useEffect(() => {
@@ -35,11 +38,6 @@ const DataVisualizer = () => {
         // Set filtered data to all data initially
         setFilteredData(datasetData.sampleData || []);
         
-        // Select first recommended chart if any
-        if (analysisData.analysis.chartRecommendations.length > 0) {
-          setSelectedChart(analysisData.analysis.chartRecommendations[0]);
-        }
-        
         setLoading(false);
       } catch (err) {
         setError('Failed to load visualization data. Please try again later.');
@@ -51,10 +49,10 @@ const DataVisualizer = () => {
   }, [id]);
 
   useEffect(() => {
-    if (selectedChart && dataset) {
-      generateChartData();
+    if (analysis && dataset && filteredData.length > 0) {
+      generateAllChartsData();
     }
-  }, [selectedChart, filteredData]);
+  }, [analysis, filteredData]);
 
   useEffect(() => {
     if (dataset) {
@@ -76,13 +74,28 @@ const DataVisualizer = () => {
     setFilteredData(filtered);
   };
 
-  const generateChartData = () => {
-    if (!selectedChart || !filteredData.length) return;
+  const generateAllChartsData = () => {
+    if (!analysis || !filteredData.length) return;
+    
+    const allChartsData = analysis.chartRecommendations.map(chart => {
+      return generateSingleChartData(chart);
+    }).filter(chart => chart !== null);
+    
+    setAvailableCharts(allChartsData);
+    
+    // Initialize with first chart selected
+    if (allChartsData.length > 0 && selectedChartIds.length === 0) {
+      setSelectedChartIds([allChartsData[0].id]);
+    }
+  };
 
-    const chartType = selectedChart.type;
-    const columns = selectedChart.columns;
+  const generateSingleChartData = (chartInfo) => {
+    if (!chartInfo || !filteredData.length) return null;
 
-    if (columns.length === 0) return;
+    const chartType = chartInfo.type;
+    const columns = chartInfo.columns;
+
+    if (columns.length === 0) return null;
 
     // Generate chart colors
     const generateColors = (count) => {
@@ -119,8 +132,12 @@ const DataVisualizer = () => {
         
         const colors = generateColors(labels.length);
         
-        setChartData({
+        return {
+          id: `${chartType}-${columns.join('-')}`,
           type: 'bar',
+          title: chartInfo.reason,
+          chartType: chartType,
+          columns: columns,
           data: {
             labels,
             datasets: [
@@ -135,6 +152,7 @@ const DataVisualizer = () => {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'top',
@@ -145,8 +163,7 @@ const DataVisualizer = () => {
               }
             }
           }
-        });
-        break;
+        };
       }
       
       case 'line': {
@@ -168,8 +185,12 @@ const DataVisualizer = () => {
           }
         });
         
-        setChartData({
+        return {
+          id: `${chartType}-${columns.join('-')}`,
           type: 'line',
+          title: chartInfo.reason,
+          chartType: chartType,
+          columns: columns,
           data: {
             labels,
             datasets: [
@@ -184,6 +205,7 @@ const DataVisualizer = () => {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               title: {
                 display: true,
@@ -191,8 +213,7 @@ const DataVisualizer = () => {
               }
             }
           }
-        });
-        break;
+        };
       }
       
       case 'pie': {
@@ -217,8 +238,12 @@ const DataVisualizer = () => {
         
         const colors = generateColors(labels.length);
         
-        setChartData({
+        return {
+          id: `${chartType}-${columns.join('-')}`,
           type: 'pie',
+          title: chartInfo.reason,
+          chartType: chartType,
+          columns: columns,
           data: {
             labels,
             datasets: [
@@ -232,9 +257,11 @@ const DataVisualizer = () => {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'right',
+                display: true
               },
               title: {
                 display: true,
@@ -242,8 +269,7 @@ const DataVisualizer = () => {
               }
             }
           }
-        });
-        break;
+        };
       }
       
       case 'scatter': {
@@ -261,8 +287,12 @@ const DataVisualizer = () => {
           }
         });
         
-        setChartData({
+        return {
+          id: `${chartType}-${columns.join('-')}`,
           type: 'scatter',
+          title: chartInfo.reason,
+          chartType: chartType,
+          columns: columns,
           data: {
             datasets: [
               {
@@ -277,6 +307,7 @@ const DataVisualizer = () => {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               title: {
                 display: true,
@@ -298,8 +329,7 @@ const DataVisualizer = () => {
               }
             }
           }
-        });
-        break;
+        };
       }
       
       case 'histogram': {
@@ -308,7 +338,7 @@ const DataVisualizer = () => {
           .map(item => Number(item[column]))
           .filter(val => !isNaN(val));
         
-        if (values.length === 0) return;
+        if (values.length === 0) return null;
         
         // Calculate bins for histogram
         const min = Math.min(...values);
@@ -332,8 +362,12 @@ const DataVisualizer = () => {
           bins[binIndex]++;
         });
         
-        setChartData({
+        return {
+          id: `${chartType}-${columns.join('-')}`,
           type: 'bar',
+          title: chartInfo.reason,
+          chartType: chartType,
+          columns: columns,
           data: {
             labels: binLabels,
             datasets: [
@@ -348,6 +382,7 @@ const DataVisualizer = () => {
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'top',
@@ -373,17 +408,16 @@ const DataVisualizer = () => {
               }
             }
           }
-        });
-        break;
+        };
       }
       
       default:
-        setChartData(null);
+        return null;
     }
   };
 
-  const renderChart = () => {
-    if (!chartData) return <p>Select a chart type to visualize data.</p>;
+  const renderChart = (chartData) => {
+    if (!chartData) return null;
 
     switch (chartData.type) {
       case 'bar':
@@ -399,6 +433,35 @@ const DataVisualizer = () => {
     }
   };
 
+  const toggleChartSelection = (chartId) => {
+    if (selectedChartIds.includes(chartId)) {
+      setSelectedChartIds(selectedChartIds.filter(id => id !== chartId));
+    } else {
+      setSelectedChartIds([...selectedChartIds, chartId]);
+    }
+  };
+
+  const toggleAllCharts = () => {
+    if (selectedChartIds.length === availableCharts.length) {
+      setSelectedChartIds([]);
+    } else {
+      setSelectedChartIds(availableCharts.map(chart => chart.id));
+    }
+  };
+
+  const toggleChartLayout = () => {
+    setChartLayout(chartLayout === 'grid' ? 'full' : 'grid');
+  };
+
+  const changeChartSize = () => {
+    setChartSizeIndex((chartSizeIndex + 1) % chartSizes.length);
+  };
+
+  // Get currently visible charts
+  const visibleCharts = availableCharts.filter(chart => 
+    selectedChartIds.includes(chart.id)
+  );
+
   if (loading) {
     return <div className="loading">Loading visualization data...</div>;
   }
@@ -410,6 +473,15 @@ const DataVisualizer = () => {
   if (!dataset || !analysis) {
     return <div className="error-container">Data not found or could not be analyzed.</div>;
   }
+
+  const chartTypeIcons = {
+    'bar': '📊',
+    'line': '📈',
+    'pie': '🥧',
+    'scatter': '⚪',
+    'histogram': '📊',
+    'groupedBar': '📊'
+  };
 
   return (
     <div className="visualizer-container">
@@ -423,20 +495,67 @@ const DataVisualizer = () => {
         </Link>
       </div>
 
-      <div className="visualizer-content">
-        <div className="chart-controls card">
-          <h3>Chart Recommendations</h3>
-          <div className="chart-selector">
-            {analysis.chartRecommendations.map((chart, index) => (
-              <button
-                key={index}
-                className={`chart-type ${selectedChart === chart ? 'active' : ''}`}
-                onClick={() => setSelectedChart(chart)}
+      <div className="visualization-content">
+        <div className="visualization-sidebar card">
+          <div className="chart-selection">
+            <div className="chart-selection-header">
+              <h3>Available Chart Types</h3>
+              <div className="selection-controls">
+                <button 
+                  className="btn btn-sm btn-secondary" 
+                  onClick={toggleAllCharts}
+                >
+                  {selectedChartIds.length === availableCharts.length ? 'Deselect All' : 'Select All'}
+                </button>
+              </div>
+            </div>
+            
+            <div className="chart-types-list">
+              {availableCharts.map(chart => (
+                <div 
+                  key={chart.id} 
+                  className={`chart-type-item ${selectedChartIds.includes(chart.id) ? 'selected' : ''}`}
+                  onClick={() => toggleChartSelection(chart.id)}
+                >
+                  <div className="chart-type-icon">
+                    {chartTypeIcons[chart.chartType] || '📈'}
+                  </div>
+                  <div className="chart-type-info">
+                    <div className="chart-type-name">{chart.chartType}</div>
+                    <div className="chart-type-columns">{chart.columns.join(', ')}</div>
+                  </div>
+                  <div className="chart-type-checkbox">
+                    <input 
+                      type="checkbox" 
+                      checked={selectedChartIds.includes(chart.id)} 
+                      onChange={() => {}} // Handled by the div click
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="visualization-controls">
+            <h3>Display Options</h3>
+            <div className="control-group">
+              <label>Layout:</label>
+              <button 
+                className={`btn btn-sm ${chartLayout === 'grid' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={toggleChartLayout}
               >
-                {chart.type}
-                <span className="chart-tooltip">{chart.reason}</span>
+                {chartLayout === 'grid' ? 'Grid View' : 'Full Width'}
               </button>
-            ))}
+            </div>
+            <div className="control-group">
+              <label>Chart Size:</label>
+              <button 
+                className="btn btn-sm btn-secondary"
+                onClick={changeChartSize}
+              >
+                {chartSizeIndex === 0 ? 'Small' : chartSizeIndex === 1 ? 'Medium' : 'Large'}
+              </button>
+            </div>
           </div>
 
           <div className="filter-controls">
@@ -495,17 +614,30 @@ const DataVisualizer = () => {
           </div>
         </div>
 
-        <div className="chart-container card">
-          <div className="chart-header">
-            <h3>
-              {selectedChart
-                ? `${selectedChart.type} Chart: ${selectedChart.reason}`
-                : 'Select a chart type'}
-            </h3>
-          </div>
-          <div className="chart-area" ref={chartContainerRef}>
-            {renderChart()}
-          </div>
+        <div className={`charts-grid ${chartLayout}`}>
+          {visibleCharts.length > 0 ? (
+            visibleCharts.map(chartData => (
+              <div 
+                className="chart-item card" 
+                key={chartData.id}
+                style={chartLayout === 'full' ? { width: '100%' } : {}}
+              >
+                <div className="chart-header">
+                  <h3>{chartData.title}</h3>
+                </div>
+                <div 
+                  className="chart-area"
+                  style={{ height: chartSizes[chartSizeIndex] }}
+                >
+                  {renderChart(chartData)}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="no-charts-message">
+              <p>No charts selected. Please select at least one chart type from the sidebar.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
