@@ -183,11 +183,11 @@ const DatasetDetail = () => {
           </div>
         </div>
 
-        <div className="dataset-actions-container flex justify-end gap-3">
+        <div className="dataset-actions-container flex flex-col gap-3">
           {!dataset.analyzed && (
             <button 
               onClick={handleAnalyzeDataset} 
-              className="btn btn-secondary"
+              className="btn btn-secondary w-full"
               disabled={analyzing}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -197,20 +197,60 @@ const DatasetDetail = () => {
             </button>
           )}
           
-          <Link to={`/visualize/${dataset._id}`} className="btn btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-            </svg>
-            Visualize Data
-          </Link>
+          <div className="visualization-options-card p-4 bg-light-color rounded-lg mt-4">
+            <h3 className="text-lg font-semibold mb-3 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+              </svg>
+              Visualization Options
+            </h3>
+            
+            <div className="visualization-methods space-y-4">
+              <div className="vis-method p-3 border border-gray-200 rounded-lg hover:border-primary transition">
+                <h4 className="font-medium mb-2">Standard Visualization</h4>
+                <p className="text-sm text-gray mb-3">Create custom charts and dashboards with flexible controls and data filtering options.</p>
+                <Link to={`/visualize/${dataset._id}`} className="btn btn-primary w-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Visualize Data
+                </Link>
+              </div>
+              
+              {dataset.analyzed ? (
+                <div className="vis-method p-3 border border-gray-200 rounded-lg hover:border-success transition">
+                  <h4 className="font-medium mb-2">AI-Powered Visualization</h4>
+                  <p className="text-sm text-gray mb-3">Let our AI analyze your data and suggest the most effective visualizations with detailed explanations.</p>
+                  <Link to={`/advanced-visualize/${dataset._id}`} className="btn btn-success w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    AI-Powered Visualization
+                  </Link>
+                </div>
+              ) : (
+                <div className="vis-method p-3 border border-gray-200 rounded-lg bg-gray-50 opacity-70">
+                  <h4 className="font-medium mb-2">AI-Powered Visualization</h4>
+                  <p className="text-sm text-gray mb-3">AI-driven visualization requires data analysis. Analyze your dataset to unlock this feature.</p>
+                  <button className="btn btn-success w-full opacity-50" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    AI-Powered Visualization
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
           
-          <button onClick={handleDeleteDataset} className="btn btn-danger">
-            <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-            Delete Dataset
-          </button>
+          <div className="mt-4 flex justify-end">
+            <button onClick={handleDeleteDataset} className="btn btn-danger">
+              <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Delete Dataset
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -9,6 +9,7 @@ import DatasetList from './components/DatasetList'
 import DatasetDetail from './components/DatasetDetail'
 import DataVisualizer from './components/DataVisualizer'
 import FileUpload from './components/FileUpload'
+import AdvancedVisualizer from './components/AdvancedVisualizer'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/datasets/:id" element={<DatasetDetail />} />
             <Route path="/visualize/:id" element={<DataVisualizer />} />
             <Route path="/upload" element={<FileUpload />} />
+            <Route path="/advanced-visualize/:id" element={<AdvancedVisualizer />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
