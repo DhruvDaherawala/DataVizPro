@@ -71,6 +71,11 @@ const DataVisualizer = () => {
         // Set filtered data to all data initially
         setFilteredData(datasetData.sampleData || []);
         
+        // Add information about data loading to cleaning steps
+        if (datasetData.sampleData && datasetData.sampleData.length > 0) {
+          addCleaningStep(`Loaded ${datasetData.sampleData.length} rows from dataset`);
+        }
+        
         setLoading(false);
       } catch (err) {
         setError('Failed to load visualization data. Please try again later.');
@@ -681,19 +686,49 @@ const DataVisualizer = () => {
 
   const renderChart = (chartData) => {
     if (!chartData) return null;
-
-    switch (chartData.type) {
-      case 'bar':
-        return <Bar data={chartData.data} options={chartData.options} />;
-      case 'line':
-        return <Line data={chartData.data} options={chartData.options} />;
-      case 'pie':
-        return <Pie data={chartData.data} options={chartData.options} />;
-      case 'scatter':
-        return <Scatter data={chartData.data} options={chartData.options} />;
-      default:
-        return <p>Unsupported chart type.</p>;
-    }
+    
+    return (
+      <div className="chart-container">
+        <div className="chart-header">
+          <h3>{customizations[chartData.id]?.title || chartData.title || 'Chart'}</h3>
+          <div className="chart-actions">
+            <button 
+              className="btn-icon" 
+              onClick={() => openChartCustomization(chartData.id)}
+              title="Customize Chart"
+            >
+              <span className="material-icons">edit</span>
+            </button>
+            <button 
+              className="btn-icon" 
+              onClick={() => exportChart(chartData.id)}
+              title="Export Chart"
+            >
+              <span className="material-icons">download</span>
+            </button>
+          </div>
+        </div>
+        <div className="chart-body">
+          {chartData.type === 'bar' && 
+            <Bar data={chartData.data} options={chartData.options} />
+          }
+          {chartData.type === 'line' && 
+            <Line data={chartData.data} options={chartData.options} />
+          }
+          {chartData.type === 'pie' && 
+            <Pie data={chartData.data} options={chartData.options} />
+          }
+          {chartData.type === 'scatter' && 
+            <Scatter data={chartData.data} options={chartData.options} />
+          }
+        </div>
+        {chartData.description && (
+          <div className="chart-description">
+            <p>{chartData.description}</p>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const toggleChartSelection = (chartId) => {
@@ -1043,6 +1078,31 @@ const DataVisualizer = () => {
     );
   };
 
+  // Toggle functions for UI elements
+  const toggleFilterBar = () => {
+    setFilterBarOpen(!filterBarOpen);
+    // Close other panels
+    setChartCreator({...chartCreator, open: false});
+    setShowAIRecommendations(false);
+    setActiveCustomization(null);
+  };
+  
+  const toggleChartCreator = () => {
+    setChartCreator({...chartCreator, open: !chartCreator.open});
+    // Close other panels
+    setFilterBarOpen(false);
+    setShowAIRecommendations(false);
+    setActiveCustomization(null);
+  };
+  
+  const toggleAIRecommendations = () => {
+    setShowAIRecommendations(!showAIRecommendations);
+    // Close other panels
+    setFilterBarOpen(false);
+    setChartCreator({...chartCreator, open: false});
+    setActiveCustomization(null);
+  };
+
   // Render the main visualization dashboard
   const renderVisualizationDashboard = () => {
     return (
@@ -1051,8 +1111,8 @@ const DataVisualizer = () => {
         <div className="dashboard-toolbar">
           <div className="toolbar-section">
             <button 
-              className="toolbar-btn" 
-              onClick={() => setFilterBarOpen(!filterBarOpen)}
+              className={`toolbar-btn ${filterBarOpen ? 'active' : ''}`} 
+              onClick={toggleFilterBar}
               title="Add Data Filter"
             >
               <span className="material-icons">filter_list</span>
@@ -1063,8 +1123,8 @@ const DataVisualizer = () => {
             </button>
             
             <button 
-              className="toolbar-btn" 
-              onClick={() => setChartCreator({...chartCreator, open: !chartCreator.open})}
+              className={`toolbar-btn ${chartCreator.open ? 'active' : ''}`} 
+              onClick={toggleChartCreator}
               title="Create Custom Chart"
             >
               <span className="material-icons">add_chart</span>
@@ -1072,6 +1132,15 @@ const DataVisualizer = () => {
             </button>
             
             <div className="divider"></div>
+            
+            <button 
+              className={`toolbar-btn ${showAIRecommendations ? 'active' : ''}`} 
+              onClick={toggleAIRecommendations}
+              title="AI Chart Recommendations"
+            >
+              <span className="material-icons">lightbulb</span>
+              <span className="btn-text">AI Recommendations</span>
+            </button>
             
             <button 
               className="toolbar-btn" 
@@ -1096,15 +1165,6 @@ const DataVisualizer = () => {
           
           <div className="toolbar-section">
             <button 
-              className="toolbar-btn" 
-              onClick={() => setShowAIRecommendations(!showAIRecommendations)}
-              title="AI Chart Recommendations"
-            >
-              <span className="material-icons">lightbulb</span>
-              <span className="btn-text">AI Recommendations</span>
-            </button>
-            
-            <button 
               className="toolbar-btn primary" 
               onClick={exportAllCharts}
               disabled={selectedChartIds.length === 0 || exportLoading}
@@ -1118,174 +1178,29 @@ const DataVisualizer = () => {
           </div>
         </div>
         
-        {/* Filter Panel */}
-        {filterBarOpen && (
-          <div className="filter-panel">
-            <div className="panel-header">
-              <h3>Data Filters</h3>
-              <button 
-                className="close-btn" 
-                onClick={() => setFilterBarOpen(false)}
-              >
-                <span className="material-icons">close</span>
-              </button>
-            </div>
-            
-            <div className="filter-form">
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Column</label>
-                  <select 
-                    value={filterColumn} 
-                    onChange={e => setFilterColumn(e.target.value)}
-                    className="form-control"
-                  >
-                    <option value="">Select column</option>
-                    {dataset.columns.map(col => (
-                      <option key={col} value={col}>{col}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div className="form-group">
-                  <label>Operator</label>
-                  <select 
-                    value={filterOperator} 
-                    onChange={e => setFilterOperator(e.target.value)}
-                    className="form-control"
-                  >
-                    <option value="contains">Contains</option>
-                    <option value="equals">Equals</option>
-                    <option value="startsWith">Starts with</option>
-                    <option value="endsWith">Ends with</option>
-                    <option value="greaterThan">Greater than</option>
-                    <option value="lessThan">Less than</option>
-                    <option value="between">Between (comma separated)</option>
-                  </select>
-                </div>
-                
-                <div className="form-group">
-                  <label>Value</label>
-                  <input 
-                    type="text" 
-                    value={filterValue} 
-                    onChange={e => setFilterValue(e.target.value)}
-                    className="form-control"
-                    placeholder={filterOperator === 'between' ? "min, max" : "Filter value"}
-                  />
-                </div>
-                
-                <div className="form-actions">
-                  <button 
-                    className="btn btn-primary"
-                    onClick={addFilter}
-                    disabled={!filterColumn || !filterValue}
-                  >
-                    Add Filter
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            {multipleFilters.length > 0 && (
-              <div className="active-filters">
-                <div className="section-header">
-                  <h4>Active Filters</h4>
-                  <button 
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={clearAllFilters}
-                  >
-                    Clear All
-                  </button>
-                </div>
-                
-                <div className="filter-tags">
-                  {multipleFilters.map(filter => (
-                    <div key={filter.id} className="filter-tag">
-                      <span className="filter-content">
-                        {filter.column} {filter.operator} "{filter.value}"
-                      </span>
-                      <button 
-                        className="remove-btn" 
-                        onClick={() => removeFilter(filter.id)}
-                      >
-                        <span className="material-icons">close</span>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-        
-        {/* Chart Creator Panel */}
-        {chartCreator.open && (
-          <div className="chart-creator-panel">
-            <div className="panel-header">
-              <h3>Create Custom Chart</h3>
-              <button 
-                className="close-btn" 
-                onClick={() => setChartCreator({...chartCreator, open: false})}
-              >
-                <span className="material-icons">close</span>
-              </button>
-            </div>
-            
-            <div className="form-content">
-              <div className="form-section">
-                <h4>Chart Properties</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Chart Type</label>
-                    <select 
-                      value={chartCreator.type} 
-                      onChange={e => setChartCreator({...chartCreator, type: e.target.value})}
-                      className="form-control"
-                    >
-                      <option value="bar">Bar Chart</option>
-                      <option value="line">Line Chart</option>
-                      <option value="pie">Pie Chart</option>
-                      <option value="scatter">Scatter Plot</option>
-                    </select>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label>Chart Title</label>
-                    <input 
-                      type="text" 
-                      value={chartCreator.title} 
-                      onChange={e => setChartCreator({...chartCreator, title: e.target.value})}
-                      className="form-control"
-                      placeholder="My Custom Chart"
-                    />
-                  </div>
-                </div>
+        {/* Panel Container */}
+        <div className="panel-container">
+          {/* Filter Panel */}
+          {filterBarOpen && (
+            <div className="filter-panel">
+              <div className="panel-header">
+                <h3>Data Filters</h3>
+                <button 
+                  className="close-btn" 
+                  onClick={() => setFilterBarOpen(false)}
+                >
+                  <span className="material-icons">close</span>
+                </button>
               </div>
               
-              <div className="form-section">
-                <h4>Data Mapping</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>{chartCreator.type === 'pie' ? 'Category Column' : 'X-Axis'}</label>
-                    <select 
-                      value={chartCreator.xAxis} 
-                      onChange={e => setChartCreator({...chartCreator, xAxis: e.target.value})}
-                      className="form-control"
-                    >
-                      <option value="">Select column</option>
-                      {dataset.columns.map(col => (
-                        <option key={col} value={col}>{col}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  {chartCreator.type !== 'pie' && (
+              <div className="panel-content">
+                <div className="filter-form">
+                  <div className="form-row">
                     <div className="form-group">
-                      <label>Y-Axis</label>
+                      <label>Column</label>
                       <select 
-                        value={chartCreator.yAxis} 
-                        onChange={e => setChartCreator({...chartCreator, yAxis: e.target.value})}
+                        value={filterColumn} 
+                        onChange={e => setFilterColumn(e.target.value)}
                         className="form-control"
                       >
                         <option value="">Select column</option>
@@ -1294,141 +1209,295 @@ const DataVisualizer = () => {
                         ))}
                       </select>
                     </div>
+                    
+                    <div className="form-group">
+                      <label>Operator</label>
+                      <select 
+                        value={filterOperator} 
+                        onChange={e => setFilterOperator(e.target.value)}
+                        className="form-control"
+                      >
+                        <option value="contains">Contains</option>
+                        <option value="equals">Equals</option>
+                        <option value="startsWith">Starts with</option>
+                        <option value="endsWith">Ends with</option>
+                        <option value="greaterThan">Greater than</option>
+                        <option value="lessThan">Less than</option>
+                        <option value="between">Between (comma separated)</option>
+                      </select>
+                    </div>
+                    
+                    <div className="form-group">
+                      <label>Value</label>
+                      <input 
+                        type="text" 
+                        value={filterValue} 
+                        onChange={e => setFilterValue(e.target.value)}
+                        className="form-control"
+                        placeholder={filterOperator === 'between' ? "min, max" : "Filter value"}
+                      />
+                    </div>
+                    
+                    <div className="form-actions">
+                      <button 
+                        className="btn btn-primary"
+                        onClick={addFilter}
+                        disabled={!filterColumn || !filterValue}
+                      >
+                        Add Filter
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                {multipleFilters.length > 0 && (
+                  <div className="active-filters">
+                    <div className="section-header">
+                      <h4>Active Filters</h4>
+                      <button 
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={clearAllFilters}
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                    
+                    <div className="filter-tags">
+                      {multipleFilters.map(filter => (
+                        <div key={filter.id} className="filter-tag">
+                          <span className="filter-content">
+                            {filter.column} {filter.operator} "{filter.value}"
+                          </span>
+                          <button 
+                            className="remove-btn" 
+                            onClick={() => removeFilter(filter.id)}
+                          >
+                            <span className="material-icons">close</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Chart Creator Panel */}
+          {chartCreator.open && (
+            <div className="chart-creator-panel">
+              <div className="panel-header">
+                <h3>Create Custom Chart</h3>
+                <button 
+                  className="close-btn" 
+                  onClick={() => setChartCreator({...chartCreator, open: false})}
+                >
+                  <span className="material-icons">close</span>
+                </button>
+              </div>
+              
+              <div className="form-content">
+                <div className="form-section">
+                  <h4>Chart Properties</h4>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Chart Type</label>
+                      <select 
+                        value={chartCreator.type} 
+                        onChange={e => setChartCreator({...chartCreator, type: e.target.value})}
+                        className="form-control"
+                      >
+                        <option value="bar">Bar Chart</option>
+                        <option value="line">Line Chart</option>
+                        <option value="pie">Pie Chart</option>
+                        <option value="scatter">Scatter Plot</option>
+                      </select>
+                    </div>
+                    
+                    <div className="form-group">
+                      <label>Chart Title</label>
+                      <input 
+                        type="text" 
+                        value={chartCreator.title} 
+                        onChange={e => setChartCreator({...chartCreator, title: e.target.value})}
+                        className="form-control"
+                        placeholder="My Custom Chart"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="form-section">
+                  <h4>Data Mapping</h4>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>{chartCreator.type === 'pie' ? 'Category Column' : 'X-Axis'}</label>
+                      <select 
+                        value={chartCreator.xAxis} 
+                        onChange={e => setChartCreator({...chartCreator, xAxis: e.target.value})}
+                        className="form-control"
+                      >
+                        <option value="">Select column</option>
+                        {dataset.columns.map(col => (
+                          <option key={col} value={col}>{col}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    {chartCreator.type !== 'pie' && (
+                      <div className="form-group">
+                        <label>Y-Axis</label>
+                        <select 
+                          value={chartCreator.yAxis} 
+                          onChange={e => setChartCreator({...chartCreator, yAxis: e.target.value})}
+                          className="form-control"
+                        >
+                          <option value="">Select column</option>
+                          {dataset.columns.map(col => (
+                            <option key={col} value={col}>{col}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {(chartCreator.type === 'bar' || chartCreator.type === 'pie') && (
+                    <div className="form-group">
+                      <label>Aggregation Method</label>
+                      <select 
+                        value={chartCreator.aggregation} 
+                        onChange={e => setChartCreator({...chartCreator, aggregation: e.target.value})}
+                        className="form-control"
+                      >
+                        <option value="count">Count</option>
+                        <option value="sum">Sum</option>
+                        <option value="average">Average</option>
+                        <option value="min">Minimum</option>
+                        <option value="max">Maximum</option>
+                      </select>
+                    </div>
                   )}
                 </div>
                 
-                {(chartCreator.type === 'bar' || chartCreator.type === 'pie') && (
+                <div className="form-section">
+                  <h4>Appearance</h4>
                   <div className="form-group">
-                    <label>Aggregation Method</label>
-                    <select 
-                      value={chartCreator.aggregation} 
-                      onChange={e => setChartCreator({...chartCreator, aggregation: e.target.value})}
-                      className="form-control"
-                    >
-                      <option value="count">Count</option>
-                      <option value="sum">Sum</option>
-                      <option value="average">Average</option>
-                      <option value="min">Minimum</option>
-                      <option value="max">Maximum</option>
-                    </select>
-                  </div>
-                )}
-              </div>
-              
-              <div className="form-section">
-                <h4>Appearance</h4>
-                <div className="form-group">
-                  <label>Color Scheme</label>
-                  <div className="color-schemes">
-                    {['blue', 'green', 'purple', 'orange', 'rainbow'].map(scheme => (
-                      <div 
-                        key={scheme} 
-                        className={`color-scheme-option ${chartCreator.colorScheme === scheme ? 'selected' : ''}`}
-                        onClick={() => setChartCreator({...chartCreator, colorScheme: scheme})}
-                      >
-                        <div className={`color-preview ${scheme}`}></div>
-                        <span>{scheme.charAt(0).toUpperCase() + scheme.slice(1)}</span>
-                      </div>
-                    ))}
+                    <label>Color Scheme</label>
+                    <div className="color-schemes">
+                      {['blue', 'green', 'purple', 'orange', 'rainbow'].map(scheme => (
+                        <div 
+                          key={scheme} 
+                          className={`color-scheme-option ${chartCreator.colorScheme === scheme ? 'selected' : ''}`}
+                          onClick={() => setChartCreator({...chartCreator, colorScheme: scheme})}
+                        >
+                          <div className={`color-preview ${scheme}`}></div>
+                          <span>{scheme.charAt(0).toUpperCase() + scheme.slice(1)}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="form-actions">
-                <button 
-                  className="btn btn-outline-secondary"
-                  onClick={() => setChartCreator({...chartCreator, open: false})}
-                >
-                  Cancel
-                </button>
-                <button 
-                  className="btn btn-primary"
-                  onClick={createCustomChart}
-                  disabled={!chartCreator.xAxis || (chartCreator.type !== 'pie' && !chartCreator.yAxis)}
-                >
-                  Create Chart
-                </button>
+                
+                <div className="form-actions">
+                  <button 
+                    className="btn btn-outline-secondary"
+                    onClick={() => setChartCreator({...chartCreator, open: false})}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="btn btn-primary"
+                    onClick={createCustomChart}
+                    disabled={!chartCreator.xAxis || (chartCreator.type !== 'pie' && !chartCreator.yAxis)}
+                  >
+                    Create Chart
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* AI Recommendations Panel */}
-        {showAIRecommendations && (
-          <div className="ai-recommendations-panel">
-            <div className="panel-header">
-              <h3>AI Chart Recommendations</h3>
-              <button 
-                className="close-btn" 
-                onClick={() => setShowAIRecommendations(false)}
-              >
-                <span className="material-icons">close</span>
-              </button>
-            </div>
-            
-            <div className="recommendations-content">
-              <p className="recommendations-info">
-                Our AI has analyzed your data and suggests the following charts to best visualize your data patterns:
-              </p>
+          )}
+          
+          {/* AI Recommendations Panel */}
+          {showAIRecommendations && (
+            <div className="ai-recommendations-panel">
+              <div className="panel-header">
+                <h3>AI Chart Recommendations</h3>
+                <button 
+                  className="close-btn" 
+                  onClick={() => setShowAIRecommendations(false)}
+                >
+                  <span className="material-icons">close</span>
+                </button>
+              </div>
               
-              <div className="recommendations-list">
-                {analysis && analysis.chartRecommendations ? (
-                  analysis.chartRecommendations.map((rec, index) => (
-                    <div key={index} className="recommendation-item">
-                      <div className="recommendation-icon">
-                        <span className="material-icons">{rec.type === 'bar' ? 'bar_chart' : rec.type === 'line' ? 'show_chart' : rec.type === 'pie' ? 'pie_chart' : 'scatter_plot'}</span>
-                      </div>
-                      <div className="recommendation-details">
-                        <h4>{rec.title}</h4>
-                        <p>{rec.description}</p>
-                        <div className="recommendation-actions">
-                          <button 
-                            className="btn btn-sm btn-primary"
-                            onClick={() => {
-                              // Create chart based on recommendation
-                              const newChartCreator = {
-                                ...chartCreator,
-                                type: rec.type,
-                                xAxis: rec.xAxis,
-                                yAxis: rec.yAxis,
-                                title: rec.title
-                              };
-                              setChartCreator(newChartCreator);
-                              // Call createCustomChart with this configuration
-                              createCustomChart(newChartCreator);
-                            }}
-                          >
-                            Create This Chart
-                          </button>
+              <div className="recommendations-content">
+                <p className="recommendations-info">
+                  Our AI has analyzed your data and suggests the following charts to best visualize your data patterns:
+                </p>
+                
+                <div className="recommendations-list">
+                  {analysis && analysis.chartRecommendations && analysis.chartRecommendations.length > 0 ? (
+                    analysis.chartRecommendations.map((chart, index) => (
+                      <div key={index} className="recommendation-item">
+                        <div className="recommendation-type">
+                          <span className="material-icons">
+                            {chart.type === 'bar' ? 'bar_chart' : 
+                             chart.type === 'line' ? 'show_chart' :
+                             chart.type === 'pie' ? 'pie_chart' : 'bubble_chart'}
+                          </span>
+                          <span>{chart.type.charAt(0).toUpperCase() + chart.type.slice(1)} Chart</span>
                         </div>
+                        <div className="recommendation-details">
+                          <p><strong>Columns:</strong> {chart.columns.join(', ')}</p>
+                          <p>{chart.reason}</p>
+                        </div>
+                        <button 
+                          className="btn btn-sm btn-primary"
+                          onClick={() => {
+                            const newChart = generateSingleChartData(chart);
+                            if (newChart) {
+                              setAvailableCharts([...availableCharts, newChart]);
+                              setSelectedChartIds([...selectedChartIds, newChart.id]);
+                              setShowAIRecommendations(false);
+                            }
+                          }}
+                        >
+                          Create Chart
+                        </button>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="no-recommendations">
-                    <p>No recommendations available. Please analyze your dataset first.</p>
-                  </div>
-                )}
+                    ))
+                  ) : (
+                    <p className="no-recommendations">
+                      No AI recommendations available. Please analyze your dataset first.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Main Dashboard Area */}
-        <div className="dashboard-main">
-          {/* Left sidebar for chart list */}
+          )}
+        </div>
+        
+        {/* Charts Container */}
+        <div className="chart-area">
+          {/* Chart list sidebar */}
           {renderChartListSidebar()}
           
           {/* Chart display area */}
-          <div className="chart-display-area">
+          <div 
+            className={`charts-container ${chartLayout}`} 
+            style={{ '--chart-size': chartSizes[chartSizeIndex] }}
+            ref={chartContainerRef}
+          >
             {loading ? (
               <div className="loading-state">
                 <div className="spinner"></div>
-                <p>Loading charts...</p>
+                <p>Loading visualization...</p>
               </div>
             ) : error ? (
               <div className="error-state">
-                <span className="material-icons">error</span>
+                <div className="error-icon">
+                  <span className="material-icons">error</span>
+                </div>
                 <p>{error}</p>
               </div>
             ) : selectedChartIds.length === 0 ? (
@@ -1437,7 +1506,7 @@ const DataVisualizer = () => {
                   <span className="material-icons">bar_chart</span>
                 </div>
                 <h3>No Charts Selected</h3>
-                <p>Select charts from the sidebar or create a new custom chart to view visualizations.</p>
+                <p>Select charts from the sidebar or create a new custom chart.</p>
                 <button 
                   className="btn btn-primary"
                   onClick={() => setChartCreator({...chartCreator, open: true})}
@@ -1446,50 +1515,13 @@ const DataVisualizer = () => {
                 </button>
               </div>
             ) : (
-              <div 
-                className={`charts-container ${chartLayout}`}
-                ref={chartContainerRef}
-                style={{
-                  '--chart-size': chartSizes[chartSizeIndex]
-                }}
-              >
-                {availableCharts
-                  .filter(chart => selectedChartIds.includes(chart.id))
-                  .map(chart => (
-                    <div key={chart.id} className="chart-container">
-                      <div className="chart-header">
-                        <h3 className="chart-title">{customizations[chart.id]?.title || chart.title}</h3>
-                        <div className="chart-actions">
-                          <button 
-                            className="btn-icon" 
-                            onClick={() => openChartCustomization(chart.id)}
-                            title="Customize Chart"
-                          >
-                            <span className="material-icons">edit</span>
-                          </button>
-                          <button 
-                            className="btn-icon" 
-                            onClick={() => exportChart(chart.id)}
-                            title="Export Chart"
-                          >
-                            <span className="material-icons">download</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div 
-                        className="chart-body"
-                        ref={el => chartsRef.current[chart.id] = el}
-                      >
-                        {renderChart(chart)}
-                      </div>
-                      {chart.description && (
-                        <div className="chart-description">
-                          <p>{chart.description}</p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
+              availableCharts
+                .filter(chart => selectedChartIds.includes(chart.id))
+                .map(chart => (
+                  <div key={chart.id} className="chart-item" ref={el => chartsRef.current[chart.id] = el}>
+                    {renderChart(chart)}
+                  </div>
+                ))
             )}
           </div>
         </div>

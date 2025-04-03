@@ -23,6 +23,13 @@ exports.getDataset = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Dataset not found with id of ${req.params.id}`, 404));
   }
   
+  // Make sure the totalRows property is included for the client 
+  if (dataset.metadata && dataset.metadata.totalRows) {
+    dataset.totalRows = dataset.metadata.totalRows;
+  } else if (dataset.sampleData) {
+    dataset.totalRows = dataset.sampleData.length;
+  }
+  
   res.status(200).json(dataset);
 });
 
@@ -92,31 +99,12 @@ exports.analyzeDataset = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Dataset not found with id of ${req.params.id}`, 404));
   }
 
-  // Run the analysis on the dataset sample data
+  // Run the analysis on the complete dataset data
   const analysisResults = AnalysisService.analyzeData(dataset.sampleData, dataset.columns);
   
-  // Optionally store analysis results in the database
-  /*
-  let analysis = await Analysis.findOne({ datasetId: dataset._id });
-  
-  if (analysis) {
-    // Update existing analysis
-    analysis.columnTypes = analysisResults.columnTypes;
-    analysis.statistics = analysisResults.statistics;
-    analysis.correlations = analysisResults.correlations;
-    analysis.chartRecommendations = analysisResults.chartRecommendations;
-    await analysis.save();
-  } else {
-    // Create new analysis
-    analysis = await Analysis.create({
-      datasetId: dataset._id,
-      columnTypes: analysisResults.columnTypes,
-      statistics: analysisResults.statistics,
-      correlations: analysisResults.correlations,
-      chartRecommendations: analysisResults.chartRecommendations
-    });
-  }
-  */
+  // Update the dataset to mark it as analyzed
+  dataset.analyzed = true;
+  await dataset.save();
   
   res.status(200).json({
     success: true,

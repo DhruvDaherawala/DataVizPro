@@ -101,7 +101,7 @@ const DatasetDetail = () => {
           </tbody>
         </table>
         <div className="text-center text-gray mt-4">
-          <p>Showing {dataset.sampleData.length} of {dataset.totalRows || 'many'} rows</p>
+          <p>Showing {Math.min(dataset.sampleData.length, 10)} of {dataset.metadata?.totalRows || dataset.sampleData.length} rows</p>
         </div>
       </div>
     );
@@ -155,7 +155,7 @@ const DatasetDetail = () => {
               <li className="flex justify-between">
                 <span className="info-label text-gray">Rows:</span>
                 <span className="info-value font-medium">
-                  {dataset.totalRows || 'Unknown'}
+                  {dataset.metadata?.totalRows || dataset.sampleData?.length || 'Unknown'}
                 </span>
               </li>
             </ul>

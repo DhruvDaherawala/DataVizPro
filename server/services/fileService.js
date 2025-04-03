@@ -24,9 +24,8 @@ class FileService {
           headers.forEach(header => columns.push(header));
         })
         .on('data', (data) => {
-          if (results.length < 10) {
-            results.push(data);
-          }
+          // Load all data, not just 10 rows
+          results.push(data);
         })
         .on('end', () => {
           if (!headerParsed && results.length > 0) {
@@ -38,7 +37,7 @@ class FileService {
             columns,
             sampleData: results,
             metadata: {
-              totalRows: results.length >= 10 ? '10+ rows' : `${results.length} rows`,
+              totalRows: results.length, // Show actual count
               columnCount: columns.length
             }
           });
@@ -79,13 +78,14 @@ class FileService {
         }
         
         const columns = dataArray.length > 0 ? Object.keys(dataArray[0]) : [];
-        const sampleData = dataArray.slice(0, 10);
+        // Return all data instead of just first 10 rows
+        const sampleData = dataArray;
         
         resolve({
           columns,
           sampleData,
           metadata: {
-            totalRows: dataArray.length >= 10 ? '10+ rows' : `${dataArray.length} rows`,
+            totalRows: dataArray.length, // Show actual count
             columnCount: columns.length
           }
         });
