@@ -2,10 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "package.json",
       "use": "@vercel/node"
     }
-  ],  
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
@@ -21,11 +21,5 @@
     "MONGODB_URI": "@mongodb_uri",
     "PORT": "8080",
     "CORS_ORIGIN": "https://datavizpro-client.vercel.app"
-  },
-  "functions": {
-    "api/**/*": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
   }
-} 
+}
