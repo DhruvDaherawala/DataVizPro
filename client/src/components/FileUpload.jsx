@@ -68,36 +68,44 @@ const FileUpload = () => {
     e.preventDefault();
     
     if (!file) {
-      setError('Please select a file to upload.');
+      setError('Please select a file to upload');
       return;
     }
     
+    if (!name.trim()) {
+      setError('Please provide a name for your dataset');
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', name);
+    formData.append('description', description);
+    
     try {
-      setLoading(true);
-      setUploadProgress(0);
-      setError(null);
+      const response = await datasetService.uploadDataset(formData);
+      console.log('Upload successful:', response);
       
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('name', name || file.name);
-      if (description) {
-        formData.append('description', description);
-      }
+      // Add a small delay to ensure the server has processed the upload
+      setTimeout(() => {
+        setLoading(false);
+        // Navigate to datasets page with refresh indicator
+        navigate('/datasets', { 
+          state: { 
+            refreshNeeded: true,
+            uploadSuccess: true 
+          },
+          replace: true
+        });
+      }, 500);
       
-      // Setup for tracking upload progress
-      const onUploadProgress = (progressEvent) => {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        setUploadProgress(percentCompleted);
-      };
-      
-      const response = await datasetService.uploadDataset(formData, onUploadProgress);
-      
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setError(error.response?.data?.message || 'Failed to upload file. Please try again.');
       setLoading(false);
-      navigate(`/datasets/${response._id}`);
-    } catch (err) {
-      console.error('Error uploading dataset:', err);
-      setLoading(false);
-      setError(err.message || 'An error occurred while uploading the file.');
     }
   };
 

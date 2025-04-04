@@ -1,0 +1,101 @@
+id,name,category,brand,price,discount,rating,stock,sold,status
+36cf7e2a-0d8a-4990-987e-de61cec7e707,Product 1,Toys,Sony,611.68,6.53,1.5,247,95,Out of Stock
+2b8d2b4d-207f-4c78-9ac1-1eb5eb368c5d,Product 2,Electronics,Adidas,35.98,32.44,1.5,265,39,Out of Stock
+22ea7951-0ce8-4b7c-b08f-3f1d81a747b1,Product 3,Sports,LG,264.51,11.85,3.7,162,54,Available
+75e982a2-33f0-4325-a188-0929acc3c1fe,Product 4,Books,Adidas,505.63,36.06,4.0,184,17,Available
+638ff504-7036-4437-93da-c5326fdf7e02,Product 5,Electronics,Samsung,288.86,12.3,1.6,77,140,Available
+0760bdfd-462b-452f-8563-02ad7ba0d54f,Product 6,Toys,Samsung,297.45,43.58,3.2,328,10,Out of Stock
+9c29cafd-fbcb-4bb0-a188-a4a3dccac646,Product 7,Electronics,Puma,855.5,33.64,2.4,184,45,Out of Stock
+d3bac32a-c2d7-4265-8209-cdade0c0816b,Product 8,Clothing,Apple,671.19,42.43,2.1,147,83,Available
+9156fabf-9d63-4bec-9e88-b685960fff7c,Product 9,Toys,Reebok,461.66,30.69,5.0,242,272,Preorder
+696ab643-cbd9-43bf-8376-b3672f28125f,Product 10,Sports,Apple,942.89,24.59,1.5,139,119,Preorder
+dd8a6a8a-d3b9-45aa-b811-b3fe9e41474f,Product 11,Beauty,Reebok,597.16,0.84,3.9,321,280,Available
+0799d5b5-f51a-4280-9891-d2087eb9d774,Product 12,Clothing,Samsung,971.37,13.04,2.7,348,89,Available
+af998c63-29cf-4188-9051-c93ad16e8e1e,Product 13,Toys,LG,479.15,10.24,2.3,396,108,Available
+bce04247-654d-4edf-8d5c-d1fa9e5e3bc7,Product 14,Sports,LG,947.93,26.75,1.8,232,52,Available
+746c8207-2078-4d37-a8bb-0776fba569b2,Product 15,Electronics,Samsung,344.24,40.36,2.2,298,48,Preorder
+f79a2432-234c-4e6b-a457-284f41053fab,Product 16,Electronics,Reebok,378.78,46.98,3.9,358,230,Out of Stock
+10e83309-c62c-4056-a75f-de3dc2fb084e,Product 17,Clothing,Puma,150.03,0.56,2.8,278,105,Out of Stock
+4feb85d2-2d68-4f16-ba07-6a999dae3c69,Product 18,Home Appliances,Puma,701.31,43.57,1.8,12,298,Preorder
+02505e98-bd0d-49a4-88ea-9bfa39c2bba0,Product 19,Clothing,Puma,428.71,29.76,3.9,41,259,Out of Stock
+e80d7391-3f65-446d-8d2d-746be5843970,Product 20,Beauty,LG,482.22,18.22,4.7,39,181,Available
+ff09fe72-2e16-4469-8fa4-7b51042b0211,Product 21,Beauty,Nike,344.58,24.1,1.6,149,255,Available
+09e86f4c-9511-48ce-9ab5-af48aeb3b6cc,Product 22,Toys,Puma,508.22,45.35,2.0,170,179,Available
+aa506a6e-ed87-4ebe-9602-a12cd0dd68ca,Product 23,Clothing,Apple,538.07,44.8,2.7,187,242,Available
+b65c83c6-6cc4-4905-b39f-d8589a4ae812,Product 24,Beauty,Nike,963.82,44.04,4.0,301,74,Available
+7b7a4509-1f5f-40b6-a1ca-d073657d75a4,Product 25,Books,Sony,289.65,0.35,3.3,223,269,Available
+4b2fc3f9-5647-4049-9fbf-1ea5355c9488,Product 26,Electronics,LG,344.48,21.87,2.7,116,78,Available
+ee9878bb-0a45-4486-bd5f-7fca4872f141,Product 27,Clothing,Puma,446.63,2.94,4.4,485,86,Available
+ed0959e8-1a35-49f0-b044-159781bf363d,Product 28,Home Appliances,Samsung,475.49,1.33,3.0,381,61,Preorder
+97353bc2-a0a3-4989-8dd4-34ecb4049dee,Product 29,Home Appliances,Apple,239.41,17.4,3.5,50,202,Out of Stock
+74463b6a-524a-43eb-ba51-7bf6f1c7aad9,Product 30,Electronics,Philips,649.68,23.75,2.1,176,34,Available
+5d4f574f-2be5-42eb-ac4d-c8b03f7fd467,Product 31,Sports,LG,237.45,7.81,2.4,42,117,Out of Stock
+96843f32-df18-4597-a778-ef8606b063cc,Product 32,Electronics,Nike,645.68,42.79,1.5,140,125,Available
+32b7fe6d-8ecd-401d-8260-a9b8c41d8bce,Product 33,Sports,Nike,534.56,25.39,4.8,418,103,Available
+8cd1e7d7-0f79-4721-8c00-f6cb89ea2c28,Product 34,Electronics,LG,423.96,9.95,4.9,470,244,Out of Stock
+5a087fa0-1d4c-4a3d-b432-6a688a237275,Product 35,Electronics,Apple,760.4,41.78,4.4,475,122,Available
+5340f8ad-79ca-4d9a-a773-bc14ee15eb0c,Product 36,Sports,Philips,295.04,33.58,3.4,454,5,Out of Stock
+f42baa4b-4c88-4c94-89f6-0c0f2f86ff46,Product 37,Clothing,Adidas,208.75,34.54,4.2,420,162,Preorder
+14888961-5a52-49dd-bc99-c6a39179a8eb,Product 38,Beauty,LG,590.6,10.66,2.2,354,24,Preorder
+42df85b2-23c8-4c29-aeb8-33455e287747,Product 39,Clothing,Reebok,921.86,23.82,2.0,10,239,Out of Stock
+56555738-7acc-4531-9dec-ef6ef6f004a5,Product 40,Home Appliances,Sony,195.31,41.53,4.9,251,226,Out of Stock
+3bb42d10-fd87-43b5-a41a-7e7cce46f42e,Product 41,Sports,Nike,447.7,48.58,4.9,64,5,Preorder
+8062837a-c3a8-4d59-b7c0-a7218b7bb5e0,Product 42,Books,Adidas,227.57,41.15,2.1,411,151,Available
+c8640b20-901e-4061-8c29-d2a5a4863d9d,Product 43,Clothing,Philips,380.73,22.42,3.4,120,285,Preorder
+0085bcb4-cdaa-4a43-a155-f97eddf6734a,Product 44,Home Appliances,Puma,332.12,27.41,1.3,145,15,Out of Stock
+5550ed9f-6860-434c-8cdf-1c14b9e55e6f,Product 45,Home Appliances,Apple,715.4,23.66,4.4,248,66,Available
+ac06c4ac-a911-4247-9d15-8a9a22e88d03,Product 46,Electronics,LG,502.11,33.16,3.8,258,171,Out of Stock
+a99629e9-d8fd-4997-be9b-1812b4ae4b45,Product 47,Books,Sony,610.54,21.67,3.6,87,3,Out of Stock
+cd7c89fe-df05-4f6b-9645-3fdfeca24c53,Product 48,Electronics,Samsung,57.24,4.59,1.5,112,41,Preorder
+16a4ca1c-59ed-407f-b4b9-447ba6c3d694,Product 49,Home Appliances,LG,763.74,43.14,4.6,268,130,Preorder
+20baa988-5f82-4370-bfe5-aa03e6836c93,Product 50,Home Appliances,Puma,99.15,44.62,4.3,188,21,Available
+f0337af2-fce4-4093-8007-e08dd0a3b28a,Product 51,Books,Reebok,461.91,31.47,4.2,380,82,Preorder
+b88068ef-0d7c-4400-a6f6-d2203d5e7074,Product 52,Books,Adidas,320.34,25.98,1.7,131,200,Available
+a05d286f-9964-4f85-9aa0-1930b52867db,Product 53,Toys,Philips,689.26,31.94,1.8,279,33,Preorder
+996f85c8-7241-4bff-845a-5f0f7f1e87c2,Product 54,Clothing,Sony,339.8,48.17,4.5,191,72,Preorder
+9bac3438-5c9b-4756-af72-af6a79674113,Product 55,Home Appliances,Nike,837.83,17.65,2.1,240,230,Available
+dc2a64c5-2dda-4377-876b-42e52f7d5e12,Product 56,Clothing,Adidas,964.37,27.78,1.0,220,125,Out of Stock
+35b7e597-c8d1-48b4-9117-bbbd2238d08d,Product 57,Beauty,Samsung,614.62,47.48,3.1,201,118,Out of Stock
+b3483884-df5b-488e-9ec3-c5cde73a36d7,Product 58,Home Appliances,Puma,126.75,20.01,2.6,409,24,Preorder
+e9142a2b-3adf-4f0f-bed4-0ad648d664ba,Product 59,Toys,Puma,985.89,48.86,3.3,349,189,Preorder
+650990ce-ab0c-4708-84fe-e32cd97a54dc,Product 60,Electronics,Philips,522.26,0.31,3.7,171,270,Out of Stock
+b0d3e8d2-7b3a-45f3-83ca-2942acf50434,Product 61,Home Appliances,Philips,732.22,5.77,2.0,138,176,Available
+6f567609-1471-4693-9864-b5b1cb3ef12e,Product 62,Clothing,Nike,714.51,22.38,4.2,325,129,Available
+22ac1ae6-bef3-4c6d-b40f-6af29c0f4bc5,Product 63,Clothing,Nike,727.75,24.82,3.1,67,7,Out of Stock
+50c5ae6d-8483-4a01-8582-be96e0c29b28,Product 64,Electronics,Apple,260.44,0.42,1.8,273,171,Available
+f927f0dd-2962-4a47-b51b-acefc49ee0df,Product 65,Home Appliances,Nike,109.46,42.2,4.5,384,91,Out of Stock
+bbbb591b-fed9-4a73-b10c-c97765e2d99e,Product 66,Electronics,Puma,187.34,4.08,1.6,401,41,Available
+d5da165c-090a-43ee-89c5-ce083474713b,Product 67,Books,Apple,529.26,27.48,2.1,445,177,Preorder
+56e8cb1a-ddc9-47e4-a92a-ee6486cf22a8,Product 68,Beauty,LG,212.71,37.11,1.4,324,133,Out of Stock
+83b90530-7cc3-4ea3-92ac-62ad2aa69dd1,Product 69,Books,Sony,85.7,20.85,4.6,358,127,Preorder
+df06aea6-0e97-4ce5-931c-b4b0579db6c7,Product 70,Beauty,LG,836.38,27.46,2.8,278,246,Out of Stock
+a6a565d2-d021-4e64-bddb-816d4d80854d,Product 71,Books,Adidas,670.79,31.9,2.2,341,172,Out of Stock
+43549134-4674-4758-a4b3-520c18251edb,Product 72,Clothing,Puma,21.81,43.98,2.6,21,139,Preorder
+5e823355-88aa-4168-8905-bec0034e4f9e,Product 73,Sports,Adidas,491.77,14.55,1.2,299,226,Out of Stock
+e4cb8abb-fb3d-42f3-81b3-9a9dabc3b857,Product 74,Home Appliances,LG,182.83,10.05,3.3,304,93,Available
+b3806532-ab7a-4153-a711-21042887d906,Product 75,Home Appliances,Samsung,464.08,17.49,3.3,236,136,Out of Stock
+ba06e900-842c-4654-8afa-5ad6e6fc662e,Product 76,Clothing,Puma,962.66,41.4,4.2,325,88,Out of Stock
+5e2958b4-70d6-48c2-9072-58c3233fb927,Product 77,Electronics,Philips,447.63,5.08,2.5,167,99,Preorder
+41832d27-73b5-4a19-8325-92f3a53cca5c,Product 78,Electronics,Nike,366.3,31.74,4.9,306,135,Out of Stock
+bdbad871-2cb2-4f06-a4ce-60ca8123968a,Product 79,Toys,LG,716.2,17.1,3.6,111,68,Available
+57c7d980-da66-45ad-a8a4-57f8b471e59d,Product 80,Beauty,Apple,806.79,45.86,2.6,15,160,Available
+4fca23d2-92c0-4adc-a2c5-981ca97e2375,Product 81,Electronics,LG,354.85,46.71,1.0,169,135,Available
+bdc70540-e79b-4811-b7b0-52867fb78d7a,Product 82,Home Appliances,Philips,654.52,42.97,2.1,400,128,Out of Stock
+b7cea19a-d497-47fd-8f75-0e2c3d9c1a82,Product 83,Toys,Nike,695.86,33.13,3.5,164,163,Preorder
+67bbad15-567f-4505-baa8-e1c13e64ea75,Product 84,Clothing,Samsung,52.08,29.51,5.0,70,6,Out of Stock
+d24da689-195d-449c-b82d-b03f693eb920,Product 85,Toys,Samsung,151.52,19.77,3.7,182,49,Out of Stock
+f943ea04-39dc-443f-bb19-d72e132b7459,Product 86,Beauty,Apple,50.76,42.32,3.4,372,261,Preorder
+27439095-2f93-4c54-aa30-495ad747b446,Product 87,Clothing,LG,471.51,7.5,1.1,404,299,Available
+611000fa-0943-4f55-a2e1-0570fa9c7ace,Product 88,Clothing,Puma,510.82,16.66,1.8,259,9,Available
+19d07194-02a6-4cf4-adb9-4d632668a9d3,Product 89,Toys,Samsung,88.82,43.53,3.9,76,102,Out of Stock
+21dce52d-0206-4420-b722-4202d30bfdf6,Product 90,Books,Nike,493.02,44.74,3.9,40,239,Out of Stock
+eed3418c-83fb-4cdf-bb5a-18354d02b79c,Product 91,Beauty,Philips,159.35,48.32,2.8,420,252,Available
+f1c5abb0-a0a5-4efe-99d1-b1e468d275a6,Product 92,Books,Nike,553.85,16.96,1.0,300,256,Available
+a8c8d470-904c-4d48-b4ae-c5f43abd6261,Product 93,Sports,Reebok,789.03,22.28,4.1,102,258,Available
+9027e085-93b5-40e1-a537-cdb536f21e40,Product 94,Clothing,Nike,144.31,41.05,3.8,236,280,Preorder
+eae5e946-d580-419a-8ea9-a57d6ab2a47e,Product 95,Beauty,Apple,55.5,4.02,2.0,154,65,Out of Stock
+90b8f004-4ec3-4755-a8a6-1b5860b43630,Product 96,Beauty,Sony,814.64,29.31,4.7,55,171,Preorder
+8448b8e9-63e8-41d1-85a5-917c62dc3d47,Product 97,Electronics,Puma,420.91,6.92,4.9,273,21,Out of Stock
+e491a814-5fc3-4984-b6fd-f9227358d920,Product 98,Toys,Reebok,500.05,3.67,4.6,491,202,Out of Stock
+736988a6-2957-468a-af0c-7894967a1d16,Product 99,Electronics,Nike,395.8,3.67,4.0,336,48,Out of Stock
+ee9cd201-1435-419a-8197-6fac665e525b,Product 100,Home Appliances,LG,648.37,41.64,2.8,53,268,Preorder

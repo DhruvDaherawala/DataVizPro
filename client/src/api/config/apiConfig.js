@@ -34,6 +34,14 @@ export const ERROR_MESSAGES = {
   TIMEOUT: 'Request timed out. Please try again.',
 };
 
+// Log API configuration in development mode
+if (import.meta.env.DEV) {
+  console.log('API Configuration:', {
+    API_BASE_URL,
+    ENV: import.meta.env.MODE
+  });
+}
+
 export default {
   API_BASE_URL,
   ENDPOINTS,

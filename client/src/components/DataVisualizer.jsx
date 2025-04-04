@@ -105,11 +105,11 @@ const DataVisualizer = () => {
         // This ensures we get analysis data if it exists
         try {
           console.log('Fetching analysis data for dataset:', id);
-          const analysisData = await datasetService.analyzeDataset(id);
+        const analysisData = await datasetService.analyzeDataset(id);
           console.log('Analysis data received:', analysisData);
           
           if (analysisData && analysisData.analysis) {
-            setAnalysis(analysisData.analysis);
+        setAnalysis(analysisData.analysis);
             
             // Check if we should switch to analysis tab based on URL
             const queryParams = new URLSearchParams(window.location.search);
@@ -272,7 +272,7 @@ const DataVisualizer = () => {
             const values = cleaned
               .map(row => parseFloat(row[column]))
               .filter(val => !isNaN(val));
-            
+              
             if (values.length > 0) {
               const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
               
@@ -1278,19 +1278,19 @@ const DataVisualizer = () => {
         </div>
         
         <div className="panel-content">
-          {availableCharts.length === 0 ? (
-            <div className="no-charts-message">
-              <div className="message-icon">📊</div>
-              <p>No charts available. Apply filters or create a custom chart.</p>
-            </div>
-          ) : (
-            <div className="chart-list">
-              {availableCharts.map(chart => (
-                <div 
-                  key={chart.id} 
-                  className={`chart-list-item ${selectedChartIds.includes(chart.id) ? 'selected' : ''}`}
-                  onClick={() => toggleChartSelection(chart.id)}
-                >
+        {availableCharts.length === 0 ? (
+          <div className="no-charts-message">
+            <div className="message-icon">📊</div>
+            <p>No charts available. Apply filters or create a custom chart.</p>
+          </div>
+        ) : (
+          <div className="chart-list">
+            {availableCharts.map(chart => (
+              <div 
+                key={chart.id} 
+                className={`chart-list-item ${selectedChartIds.includes(chart.id) ? 'selected' : ''}`}
+                onClick={() => toggleChartSelection(chart.id)}
+              >
                   <div className="chart-item-header">
                     <div className="chart-icon">
                       <span className="material-icons">
@@ -1299,31 +1299,31 @@ const DataVisualizer = () => {
                          chart.type === 'pie' ? 'pie_chart' : 'scatter_plot'}
                       </span>
                     </div>
-                    <div className="chart-info">
+                <div className="chart-info">
                       <div className="chart-title">{customizations[chart.id]?.title || chart.title || `${chart.type.charAt(0).toUpperCase() + chart.type.slice(1)} Chart`}</div>
                       <div className="chart-subtitle">{chart.subtitle || chart.columns.join(', ')}</div>
                     </div>
-                  </div>
-                  <div className="chart-actions">
-                    <button 
-                      className="btn-icon" 
-                      onClick={(e) => { e.stopPropagation(); openChartCustomization(chart.id); }}
-                      title="Customize Chart"
-                    >
-                      <span className="material-icons">edit</span>
-                    </button>
-                    <button 
-                      className="btn-icon" 
+                </div>
+                <div className="chart-actions">
+                  <button 
+                    className="btn-icon" 
+                    onClick={(e) => { e.stopPropagation(); openChartCustomization(chart.id); }}
+                    title="Customize Chart"
+                  >
+                    <span className="material-icons">edit</span>
+                  </button>
+                  <button 
+                    className="btn-icon" 
                       onClick={(e) => { e.stopPropagation(); removeChart(chart.id); }}
                       title="Remove Chart"
-                    >
+                  >
                       <span className="material-icons">delete</span>
-                    </button>
-                  </div>
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
+        )}
         </div>
       </div>
     );
@@ -1446,8 +1446,8 @@ const DataVisualizer = () => {
               )}
             </button>
           </div>
-        </div>
-        
+          </div>
+          
         {/* Main content with sidebars and chart area */}
         <div className="visualization-main-content">
           {/* Chart display area */}
@@ -1480,13 +1480,13 @@ const DataVisualizer = () => {
                   </div>
                   <h3>No Charts Selected</h3>
                   <p>Select charts from the sidebar or create a new custom chart.</p>
-                  <button 
+            <button 
                     className="btn btn-primary"
                     onClick={() => setChartCreator({...chartCreator, open: true})}
                   >
                     Create Your First Chart
-                  </button>
-                </div>
+            </button>
+          </div>
               ) : (
                 visibleCharts.map(chart => (
                   <div key={chart.id} className="chart-item">
@@ -1494,128 +1494,128 @@ const DataVisualizer = () => {
                   </div>
                 ))
               )}
-            </div>
-            
+        </div>
+        
             {/* Right Sidebar for controls */}
             <div className="control-sidebar">
-              {/* Filter Panel */}
-              {filterBarOpen && (
+          {/* Filter Panel */}
+          {filterBarOpen && (
                 <div className="sidebar-panel">
-                  <div className="panel-header">
+              <div className="panel-header">
                     <h3>Filter Data</h3>
-                    <button 
-                      className="close-btn" 
-                      onClick={() => setFilterBarOpen(false)}
-                    >
-                      <span className="material-icons">close</span>
-                    </button>
-                  </div>
-                  
-                  <div className="panel-content">
-                    <div className="filter-form">
+                <button 
+                  className="close-btn" 
+                  onClick={() => setFilterBarOpen(false)}
+                >
+                  <span className="material-icons">close</span>
+                </button>
+              </div>
+              
+              <div className="panel-content">
+                <div className="filter-form">
                       <h4>Add Filter</h4>
-                      <div className="form-row">
-                        <div className="form-group">
-                          <label>Column</label>
-                          <select 
-                            value={filterColumn} 
-                            onChange={e => setFilterColumn(e.target.value)}
-                            className="form-control"
-                          >
-                            <option value="">Select column</option>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Column</label>
+                      <select 
+                        value={filterColumn} 
+                        onChange={e => setFilterColumn(e.target.value)}
+                        className="form-control"
+                      >
+                        <option value="">Select column</option>
                             {dataset?.columns?.map(col => (
-                              <option key={col} value={col}>{col}</option>
-                            ))}
-                          </select>
-                        </div>
-                        
-                        <div className="form-group">
-                          <label>Operator</label>
-                          <select 
-                            value={filterOperator} 
-                            onChange={e => setFilterOperator(e.target.value)}
-                            className="form-control"
-                          >
-                            <option value="contains">Contains</option>
-                            <option value="equals">Equals</option>
+                          <option key={col} value={col}>{col}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div className="form-group">
+                      <label>Operator</label>
+                      <select 
+                        value={filterOperator} 
+                        onChange={e => setFilterOperator(e.target.value)}
+                        className="form-control"
+                      >
+                        <option value="contains">Contains</option>
+                        <option value="equals">Equals</option>
                             <option value="greater">Greater Than</option>
                             <option value="less">Less Than</option>
                             <option value="starts">Starts With</option>
                             <option value="ends">Ends With</option>
-                          </select>
-                        </div>
-                        
-                        <div className="form-group">
-                          <label>Value</label>
-                          <input 
-                            type="text" 
-                            value={filterValue} 
-                            onChange={e => setFilterValue(e.target.value)}
-                            className="form-control"
-                            placeholder="Filter value"
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="form-actions">
-                        <button 
-                          className="btn btn-primary"
-                          onClick={addFilter}
-                          disabled={!filterColumn || !filterValue}
-                        >
-                          Add Filter
-                        </button>
-                      </div>
+                      </select>
                     </div>
                     
-                    {multipleFilters.length > 0 && (
-                      <div className="active-filters">
-                        <div className="section-header">
-                          <h4>Active Filters</h4>
-                          <button 
-                            className="btn-sm btn-outline-danger"
-                            onClick={clearAllFilters}
-                          >
-                            Clear All
-                          </button>
+                    <div className="form-group">
+                      <label>Value</label>
+                      <input 
+                        type="text" 
+                        value={filterValue} 
+                        onChange={e => setFilterValue(e.target.value)}
+                        className="form-control"
+                            placeholder="Filter value"
+                      />
                         </div>
-                        
-                        <div className="filter-tags">
-                          {multipleFilters.map(filter => (
-                            <div key={filter.id} className="filter-tag">
-                              <span className="filter-content">
-                                {filter.column} {filter.operator} "{filter.value}"
-                              </span>
-                              <button 
-                                className="remove-btn"
-                                onClick={() => removeFilter(filter.id)}
-                              >
-                                <span className="material-icons">close</span>
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    </div>
+                    
+                    <div className="form-actions">
+                      <button 
+                        className="btn btn-primary"
+                        onClick={addFilter}
+                        disabled={!filterColumn || !filterValue}
+                      >
+                        Add Filter
+                      </button>
                   </div>
                 </div>
-              )}
-              
-              {/* Chart Creator Panel */}
-              {chartCreator.open && (
-                <div className="sidebar-panel">
-                  <div className="panel-header">
-                    <h3>Create Custom Chart</h3>
-                    <button 
-                      className="close-btn" 
-                      onClick={() => setChartCreator({...chartCreator, open: false})}
-                    >
-                      <span className="material-icons">close</span>
-                    </button>
+                
+                {multipleFilters.length > 0 && (
+                  <div className="active-filters">
+                    <div className="section-header">
+                      <h4>Active Filters</h4>
+                      <button 
+                            className="btn-sm btn-outline-danger"
+                        onClick={clearAllFilters}
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                    
+                    <div className="filter-tags">
+                      {multipleFilters.map(filter => (
+                        <div key={filter.id} className="filter-tag">
+                          <span className="filter-content">
+                            {filter.column} {filter.operator} "{filter.value}"
+                          </span>
+                          <button 
+                            className="remove-btn" 
+                            onClick={() => removeFilter(filter.id)}
+                          >
+                            <span className="material-icons">close</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Chart Creator Panel */}
+          {chartCreator.open && (
+                <div className="sidebar-panel">
+              <div className="panel-header">
+                <h3>Create Custom Chart</h3>
+                <button 
+                  className="close-btn" 
+                  onClick={() => setChartCreator({...chartCreator, open: false})}
+                >
+                  <span className="material-icons">close</span>
+                </button>
+              </div>
+              
                   <div className="panel-content">
-                    <div className="form-section">
+                <div className="form-section">
                       <h4>Chart Type</h4>
                       <div className="chart-type-selector">
                         <div 
@@ -1651,89 +1651,89 @@ const DataVisualizer = () => {
                     
                     <div className="form-section">
                       <h4>Chart Details</h4>
-                      <div className="form-group">
-                        <label>Chart Title</label>
-                        <input 
-                          type="text" 
-                          value={chartCreator.title} 
-                          onChange={e => setChartCreator({...chartCreator, title: e.target.value})}
-                          className="form-control"
-                          placeholder="My Custom Chart"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="form-section">
-                      <h4>Data Mapping</h4>
-                      <div className="form-row">
-                        <div className="form-group">
-                          <label>{chartCreator.type === 'pie' ? 'Category Column' : 'X-Axis'}</label>
-                          <select 
-                            value={chartCreator.xAxis} 
-                            onChange={e => setChartCreator({...chartCreator, xAxis: e.target.value})}
-                            className="form-control"
-                          >
-                            <option value="">Select column</option>
+                    <div className="form-group">
+                      <label>Chart Title</label>
+                      <input 
+                        type="text" 
+                        value={chartCreator.title} 
+                        onChange={e => setChartCreator({...chartCreator, title: e.target.value})}
+                        className="form-control"
+                        placeholder="My Custom Chart"
+                      />
+                  </div>
+                </div>
+                
+                <div className="form-section">
+                  <h4>Data Mapping</h4>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>{chartCreator.type === 'pie' ? 'Category Column' : 'X-Axis'}</label>
+                      <select 
+                        value={chartCreator.xAxis} 
+                        onChange={e => setChartCreator({...chartCreator, xAxis: e.target.value})}
+                        className="form-control"
+                      >
+                        <option value="">Select column</option>
                             {dataset?.columns?.map(col => (
-                              <option key={col} value={col}>{col}</option>
-                            ))}
-                          </select>
-                        </div>
-                        
-                        {chartCreator.type !== 'pie' && (
-                          <div className="form-group">
-                            <label>Y-Axis</label>
-                            <select 
-                              value={chartCreator.yAxis} 
-                              onChange={e => setChartCreator({...chartCreator, yAxis: e.target.value})}
-                              className="form-control"
-                            >
-                              <option value="">Select column</option>
-                              {dataset?.columns?.map(col => (
-                                <option key={col} value={col}>{col}</option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {(chartCreator.type === 'bar' || chartCreator.type === 'pie') && (
-                        <div className="form-group">
-                          <label>Aggregation Method</label>
-                          <select 
-                            value={chartCreator.aggregation} 
-                            onChange={e => setChartCreator({...chartCreator, aggregation: e.target.value})}
-                            className="form-control"
-                          >
-                            <option value="count">Count</option>
-                            <option value="sum">Sum</option>
-                            <option value="average">Average</option>
-                            <option value="min">Minimum</option>
-                            <option value="max">Maximum</option>
-                          </select>
-                        </div>
-                      )}
+                          <option key={col} value={col}>{col}</option>
+                        ))}
+                      </select>
                     </div>
                     
-                    <div className="form-section">
-                      <h4>Appearance</h4>
+                    {chartCreator.type !== 'pie' && (
                       <div className="form-group">
-                        <label>Color Scheme</label>
-                        <div className="color-schemes">
-                          <div 
+                        <label>Y-Axis</label>
+                        <select 
+                          value={chartCreator.yAxis} 
+                          onChange={e => setChartCreator({...chartCreator, yAxis: e.target.value})}
+                          className="form-control"
+                        >
+                          <option value="">Select column</option>
+                              {dataset?.columns?.map(col => (
+                            <option key={col} value={col}>{col}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {(chartCreator.type === 'bar' || chartCreator.type === 'pie') && (
+                    <div className="form-group">
+                      <label>Aggregation Method</label>
+                      <select 
+                        value={chartCreator.aggregation} 
+                        onChange={e => setChartCreator({...chartCreator, aggregation: e.target.value})}
+                        className="form-control"
+                      >
+                        <option value="count">Count</option>
+                        <option value="sum">Sum</option>
+                        <option value="average">Average</option>
+                        <option value="min">Minimum</option>
+                        <option value="max">Maximum</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="form-section">
+                  <h4>Appearance</h4>
+                  <div className="form-group">
+                    <label>Color Scheme</label>
+                    <div className="color-schemes">
+                        <div 
                             className={`chart-type-option ${chartCreator.colorScheme === 'blue' ? 'selected' : ''}`}
                             onClick={() => setChartCreator({...chartCreator, colorScheme: 'blue'})}
-                          >
+                        >
                             <div style={{ backgroundColor: 'rgba(54, 162, 235, 0.7)', width: '100%', height: '20px', borderRadius: '4px' }}></div>
                             <span>Blue</span>
-                          </div>
+                        </div>
                           <div 
                             className={`chart-type-option ${chartCreator.colorScheme === 'green' ? 'selected' : ''}`}
                             onClick={() => setChartCreator({...chartCreator, colorScheme: 'green'})}
                           >
                             <div style={{ backgroundColor: 'rgba(75, 192, 92, 0.7)', width: '100%', height: '20px', borderRadius: '4px' }}></div>
                             <span>Green</span>
-                          </div>
+                    </div>
                           <div 
                             className={`chart-type-option ${chartCreator.colorScheme === 'red' ? 'selected' : ''}`}
                             onClick={() => setChartCreator({...chartCreator, colorScheme: 'red'})}
@@ -1783,48 +1783,48 @@ const DataVisualizer = () => {
                             </div>
                           );
                         })()}
-                      </div>
-                    </div>
-                    
-                    <div className="form-actions">
-                      <button 
-                        className="btn-icon" 
-                        onClick={() => setChartCreator({...chartCreator, open: false})}
-                        title="Cancel"
-                      >
-                        <span className="material-icons">close</span>
-                      </button>
-                      <button 
-                        className="btn btn-primary"
-                        onClick={createCustomChart}
-                        disabled={!chartCreator.xAxis || (chartCreator.type !== 'pie' && !chartCreator.yAxis) || !chartCreator.title}
-                      >
-                        Create Chart
-                      </button>
-                    </div>
                   </div>
                 </div>
-              )}
-              
-              {/* AI Recommendations Panel */}
-              {showAIRecommendations && (
+                
+                <div className="form-actions">
+                  <button 
+                        className="btn-icon" 
+                    onClick={() => setChartCreator({...chartCreator, open: false})}
+                        title="Cancel"
+                  >
+                        <span className="material-icons">close</span>
+                  </button>
+                  <button 
+                    className="btn btn-primary"
+                    onClick={createCustomChart}
+                        disabled={!chartCreator.xAxis || (chartCreator.type !== 'pie' && !chartCreator.yAxis) || !chartCreator.title}
+                  >
+                    Create Chart
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* AI Recommendations Panel */}
+          {showAIRecommendations && (
                 <div className="sidebar-panel">
-                  <div className="panel-header">
-                    <h3>AI Chart Recommendations</h3>
-                    <button 
-                      className="close-btn" 
-                      onClick={() => setShowAIRecommendations(false)}
-                    >
-                      <span className="material-icons">close</span>
-                    </button>
-                  </div>
-                  
+              <div className="panel-header">
+                <h3>AI Chart Recommendations</h3>
+                <button 
+                  className="close-btn" 
+                  onClick={() => setShowAIRecommendations(false)}
+                >
+                  <span className="material-icons">close</span>
+                </button>
+              </div>
+              
                   <div className="panel-content">
                     <div className="recommendations-info">
                       Based on your data, here are some chart suggestions that might help you discover insights.
                     </div>
                     
-                    {analysis && analysis.chartRecommendations && analysis.chartRecommendations.length > 0 ? (
+                  {analysis && analysis.chartRecommendations && analysis.chartRecommendations.length > 0 ? (
                       <div className="recommendations-list">
                         {analysis.chartRecommendations.map((rec, index) => {
                           // Find if a chart was already created for this recommendation
@@ -1834,18 +1834,18 @@ const DataVisualizer = () => {
                           );
                           
                           return (
-                            <div key={index} className="recommendation-item">
-                              <div className="recommendation-type">
-                                <span className="material-icons">
+                      <div key={index} className="recommendation-item">
+                        <div className="recommendation-type">
+                          <span className="material-icons">
                                   {rec.type === 'bar' ? 'bar_chart' : 
                                    rec.type === 'line' ? 'show_chart' : 
                                    rec.type === 'pie' ? 'pie_chart' : 'scatter_plot'}
-                                </span>
+                          </span>
                                 {rec.type.charAt(0).toUpperCase() + rec.type.slice(1)} Chart
-                              </div>
-                              <div className="recommendation-details">
+                        </div>
+                        <div className="recommendation-details">
                                 {rec.reason}
-                              </div>
+                        </div>
                               <div className="recommendation-columns">
                                 <small>Columns: {rec.columns.join(', ')}</small>
                               </div>
@@ -1866,33 +1866,33 @@ const DataVisualizer = () => {
                                     </button>
                                   </>
                                 ) : (
-                                  <button 
-                                    className="btn btn-sm btn-primary"
-                                    onClick={() => {
+                        <button 
+                          className="btn btn-sm btn-primary"
+                          onClick={() => {
                                       const newChart = generateSingleChartData(rec);
-                                      if (newChart) {
-                                        setAvailableCharts([...availableCharts, newChart]);
-                                        setSelectedChartIds([...selectedChartIds, newChart.id]);
-                                      }
-                                    }}
-                                  >
-                                    Create Chart
-                                  </button>
+                            if (newChart) {
+                              setAvailableCharts([...availableCharts, newChart]);
+                              setSelectedChartIds([...selectedChartIds, newChart.id]);
+                            }
+                          }}
+                        >
+                          Create Chart
+                        </button>
                                 )}
-                              </div>
+                      </div>
                             </div>
                           );
                         })}
                       </div>
-                    ) : (
-                      <p className="no-recommendations">
-                        No AI recommendations available. Please analyze your dataset first.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
+                  ) : (
+                    <p className="no-recommendations">
+                      No AI recommendations available. Please analyze your dataset first.
+                    </p>
+                  )}
+              </div>
             </div>
+          )}
+        </div>
           </div>
         </div>
       </div>
@@ -2259,10 +2259,10 @@ const DataVisualizer = () => {
   const renderDataCleaningTab = () => {
     if (!dataset || !analysis) {
       return (
-        <div className="loading-state">
-          <div className="spinner"></div>
+              <div className="loading-state">
+                <div className="spinner"></div>
           <p>Loading data cleaning tools...</p>
-        </div>
+              </div>
       );
     }
 
@@ -2310,7 +2310,7 @@ const DataVisualizer = () => {
         <div className="dashboard-toolbar">
           <div className="toolbar-section">
             <h3>Data Cleaning & Preprocessing</h3>
-          </div>
+                </div>
           
           <div className="toolbar-section">
             <button 
@@ -2326,8 +2326,8 @@ const DataVisualizer = () => {
               <span className="material-icons">restore</span>
               <span className="btn-text">Reset Data</span>
             </button>
-          </div>
-        </div>
+              </div>
+                </div>
         
         <div className="data-cleaning-container">
           <div className="cleaning-controls">
@@ -2339,8 +2339,8 @@ const DataVisualizer = () => {
             </div>
             
             <div className="cleaning-actions">
-              <button 
-                className="btn btn-primary"
+                <button 
+                  className="btn btn-primary"
                 onClick={cleanData}
                 title="Auto-clean missing values and outliers"
               >
@@ -2366,8 +2366,8 @@ const DataVisualizer = () => {
               >
                 <span className="material-icons">download</span>
                 Export Cleaned Data
-              </button>
-            </div>
+                </button>
+              </div>
             
             <div className="cleaning-info">
               <p>Automatic cleaning will perform these operations:</p>
@@ -2585,7 +2585,7 @@ const DataVisualizer = () => {
                     <div className="step-description">{step.description}</div>
                   </div>
                 ))
-              )}
+            )}
             </div>
           </div>
         </div>

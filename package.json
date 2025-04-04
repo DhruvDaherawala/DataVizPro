@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "markdown-pdf": "^11.0.0"
+  }
+}

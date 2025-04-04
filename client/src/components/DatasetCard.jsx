@@ -1,25 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { formatDate, formatFileSize } from '../utils/formatters';
 import '../styles/DatasetCard.css';
 
 const DatasetCard = ({ dataset, onDelete, onAnalyze }) => {
   const { _id, name, description, createdAt, fileSize, fileType, analyzed } = dataset;
   
-  // Format the date
-  const formattedDate = new Date(createdAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
-  
-  // Format file size
-  const formatFileSize = (sizeInBytes) => {
-    if (sizeInBytes < 1024) return `${sizeInBytes} B`;
-    if (sizeInBytes < 1024 * 1024) return `${(sizeInBytes / 1024).toFixed(1)} KB`;
-    return `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
-  };
-
   return (
     <div className="dataset-card">
       <div className="dataset-card-header">
@@ -54,7 +41,7 @@ const DatasetCard = ({ dataset, onDelete, onAnalyze }) => {
             <svg xmlns="http://www.w3.org/2000/svg" className="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <span>{formattedDate}</span>
+            <span>{formatDate(createdAt)}</span>
           </div>
           
           <div className="meta-item">

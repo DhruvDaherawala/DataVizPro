@@ -1,27 +1,48 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { datasetService } from '../api';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+import { formatDate } from '../utils/formatters';
 import DatasetCard from './DatasetCard';
 
 const DatasetList = () => {
+  const location = useLocation();
   const [datasets, setDatasets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   useEffect(() => {
     fetchDatasets();
-  }, []);
+    
+    // Check if we need to refresh due to a new upload
+    if (location.state?.refreshNeeded && location.state?.uploadSuccess) {
+      setUploadSuccess(true);
+      
+      // Clear success message after 3 seconds
+      const timer = setTimeout(() => {
+        setUploadSuccess(false);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   const fetchDatasets = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await datasetService.getAllDatasets();
+      // Add cache buster when refreshing from an upload
+      const cacheBuster = location.state?.refreshNeeded ? `?t=${Date.now()}` : '';
+      const data = await datasetService.getAllDatasets(cacheBuster);
       setDatasets(data);
-      setLoading(false);
+      setError(null);
     } catch (err) {
-      console.error('Error fetching datasets:', err);
-      setError('Failed to load datasets. Please try again later.');
+      console.error('Failed to fetch datasets:', err);
+      setError('Failed to fetch datasets. Please try again later.');
+      setDatasets([]);
+    } finally {
       setLoading(false);
     }
   };
@@ -83,6 +104,15 @@ const DatasetList = () => {
             </Link>
           </div>
         </div>
+
+        {uploadSuccess && (
+          <div className="success-alert bg-green-100 p-4 rounded-lg mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-green-700">Dataset uploaded successfully!</span>
+          </div>
+        )}
 
         {loading ? (
           <div className="loading-state text-center py-5">

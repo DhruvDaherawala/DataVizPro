@@ -51,12 +51,63 @@ server/
 - **DELETE /api/datasets/:id** - Delete a dataset
 - **GET /api/datasets/:id/analyze** - Analyze a dataset
 
-## Installation
+## Setup and Development
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Copy the `.env.example` file to `.env` and update the values
-4. Start the server: `npm run dev`
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Create an `.env` file based on `.env.example` and update the values.
+
+3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+## API Documentation
+
+The server provides the following endpoints:
+
+- `GET /api/datasets` - Get all datasets
+- `GET /api/datasets/:id` - Get a specific dataset
+- `POST /api/upload` - Upload a new dataset
+- `GET /api/datasets/:id/analyze` - Analyze a dataset
+- `GET /api/health` - Health check endpoint
+
+## Deployment to Vercel
+
+This API server is configured for easy deployment on Vercel:
+
+1. Fork or clone this repository to your GitHub account
+
+2. Connect to Vercel:
+   - Sign up or log in to [Vercel](https://vercel.com)
+   - Click "New Project" and import the repository
+   - Select the server directory for deployment
+
+3. Set up a MongoDB database:
+   - You can use MongoDB Atlas for a cloud-hosted database
+   - Create a new cluster and get the connection string
+
+4. Configure Environment Variables in Vercel:
+   - `MONGODB_URI`: Your MongoDB connection string
+   - `CORS_ORIGIN`: URL of your frontend application
+   - `NODE_ENV`: Set to `production`
+
+5. Deploy:
+   - Click "Deploy" and wait for the build to complete
+   - Your API server should now be live at the provided Vercel URL
+
+## Environment Variables
+
+- `PORT`: The port the server will run on
+- `NODE_ENV`: Environment (development, production)
+- `MONGODB_URI`: MongoDB connection string
+- `CORS_ORIGIN`: Allowed CORS origin
+- `MAX_FILE_SIZE`: Maximum file upload size in bytes
+- `ALLOWED_FILE_TYPES`: Comma-separated list of allowed file types
+- `FILE_UPLOAD_PATH`: Path to upload files
 
 ## Dependencies
 

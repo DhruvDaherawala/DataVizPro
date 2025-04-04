@@ -16,8 +16,26 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Configure CORS
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+// Log environment information in non-production environments
+if (process.env.NODE_ENV !== 'production') {
+  console.log('Environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: PORT,
+    CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    MONGODB_URI: process.env.MONGODB_URI ? '(set)' : '(not set)'
+  });
+}
+
 // Middlewares
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -152,6 +170,16 @@ app.get('/api/datasets/:id/analyze', async (req, res) => {
     console.error('Analysis error:', error);
     res.status(500).json({ message: 'Error analyzing dataset', error: error.message });
   }
+});
+
+// Add a health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK',
+    message: 'Server is running',
+    env: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Start server

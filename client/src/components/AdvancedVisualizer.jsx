@@ -49,7 +49,7 @@ const AdvancedVisualizer = () => {
         // Try to fetch analysis data
         try {
           console.log('Fetching analysis data for dataset:', id);
-          const analysisData = await datasetService.analyzeDataset(id);
+        const analysisData = await datasetService.analyzeDataset(id);
           console.log('Analysis data received:', analysisData);
           
           if (analysisData && analysisData.analysis) {
@@ -444,13 +444,13 @@ const AdvancedVisualizer = () => {
         );
         
         chartData = {
-          labels,
+            labels,
           datasets: [{
             label: 'Frequency',
             data: bins,
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
+                borderWidth: 1
           }]
         };
         
@@ -463,8 +463,8 @@ const AdvancedVisualizer = () => {
             }
           },
           x: {
-            title: {
-              display: true,
+              title: {
+                display: true,
               text: xAxis
             }
           }
@@ -486,14 +486,14 @@ const AdvancedVisualizer = () => {
         const data = sortedData.map(item => Number(item[yAxis]));
         
         chartData = {
-          labels,
+            labels,
           datasets: [{
             label: yAxis,
-            data,
-            fill: false,
+                data,
+                fill: false,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
-            tension: 0.1
+                tension: 0.1
           }]
         };
         
@@ -505,8 +505,8 @@ const AdvancedVisualizer = () => {
             }
           },
           x: {
-            title: {
-              display: true,
+              title: {
+                display: true,
               text: xAxis
             }
           }
@@ -534,12 +534,12 @@ const AdvancedVisualizer = () => {
         });
         
         chartData = {
-          labels,
+            labels,
           datasets: [{
-            data,
-            backgroundColor: colors,
-            borderColor: colors.map(color => color.replace('0.7', '1')),
-            borderWidth: 1
+                data,
+                backgroundColor: colors,
+                borderColor: colors.map(color => color.replace('0.7', '1')),
+                borderWidth: 1
           }]
         };
         
@@ -567,14 +567,14 @@ const AdvancedVisualizer = () => {
         
         chartOptions.scales = {
           y: {
-            title: {
-              display: true,
+              title: {
+                display: true,
               text: yAxis
-            }
-          },
-          x: {
-            title: {
-              display: true,
+              }
+            },
+              x: {
+                title: {
+                  display: true,
               text: xAxis
             }
           }
@@ -605,9 +605,9 @@ const AdvancedVisualizer = () => {
           <p>Loading dataset information...</p>
         </div>
       );
-    }
-    
-    if (error) {
+  }
+
+  if (error) {
       return (
         <div className="error-container">
           <div className="error-icon">⚠️</div>
@@ -638,9 +638,9 @@ const AdvancedVisualizer = () => {
           {renderProgressBar()}
         </div>
       );
-    }
-    
-    return (
+  }
+
+  return (
       <div className="ai-dashboard">
         <div className="ai-dashboard-header">
           <h1>AI-Powered Visualization</h1>
@@ -653,7 +653,7 @@ const AdvancedVisualizer = () => {
             {aiInsights.length > 0 ? (
               <div className="insights-container">
                 {aiInsights.map((insight, index) => renderInsight(insight, index))}
-              </div>
+      </div>
             ) : (
               <div className="no-insights">
                 <p>No insights could be generated from the current dataset.</p>
@@ -663,7 +663,7 @@ const AdvancedVisualizer = () => {
                 >
                   Regenerate Insights
                 </button>
-              </div>
+                    </div>
             )}
           </div>
           
@@ -681,8 +681,8 @@ const AdvancedVisualizer = () => {
                   </button>
                   <button className="btn btn-secondary">
                     Edit Chart
-                  </button>
-                </div>
+              </button>
+            </div>
               </div>
             ) : (
               <div className="no-chart-selected">
@@ -726,9 +726,9 @@ const AdvancedVisualizer = () => {
             className={`tab ai-insights active`}
           >
             AI-Powered Insights
-          </div>
-        </div>
-        
+                  </div>
+              </div>
+              
         <div className="dataset-info">
           {dataset && (
             <>
