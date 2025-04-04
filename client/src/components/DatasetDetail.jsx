@@ -34,9 +34,25 @@ const DatasetDetail = () => {
     
     try {
       setAnalyzing(true);
-      await datasetService.analyzeDataset(id);
-      await fetchDataset(); // Refresh dataset after analysis
+      
+      // Call the analyze endpoint and wait for it to complete
+      const result = await datasetService.analyzeDataset(id);
+      console.log('Analysis completed successfully:', result);
+      
+      // Refresh the dataset data to get updated analyzed status
+      await fetchDataset();
+      
+      // Set analyzing to false
       setAnalyzing(false);
+      
+      // Navigate directly to the visualization component with state parameter
+      // This is more reliable than using URL parameters
+      navigate(`/visualize/${id}`, { 
+        replace: true,
+        state: { activeTab: 'analyze' } 
+      });
+      console.log('Navigating to visualization page with analyze tab via state');
+      
     } catch (err) {
       console.error('Error analyzing dataset:', err);
       setAnalyzing(false);
@@ -217,29 +233,18 @@ const DatasetDetail = () => {
                 </Link>
               </div>
               
-              {dataset.analyzed ? (
-                <div className="vis-method p-3 border border-gray-200 rounded-lg hover:border-success transition">
-                  <h4 className="font-medium mb-2">AI-Powered Visualization</h4>
-                  <p className="text-sm text-gray mb-3">Let our AI analyze your data and suggest the most effective visualizations with detailed explanations.</p>
-                  <Link to={`/advanced-visualize/${dataset._id}`} className="btn btn-success w-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    AI-Powered Visualization
-                  </Link>
-                </div>
-              ) : (
-                <div className="vis-method p-3 border border-gray-200 rounded-lg bg-gray-50 opacity-70">
-                  <h4 className="font-medium mb-2">AI-Powered Visualization</h4>
-                  <p className="text-sm text-gray mb-3">AI-driven visualization requires data analysis. Analyze your dataset to unlock this feature.</p>
-                  <button className="btn btn-success w-full opacity-50" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    AI-Powered Visualization
-                  </button>
-                </div>
-              )}
+              <div className="vis-method p-3 border border-gray-200 rounded-lg hover:border-success transition">
+                <h4 className="font-medium mb-2">AI-Powered Visualization</h4>
+                <p className="text-sm text-gray mb-3">Let our AI analyze your data and suggest the most effective visualizations with detailed explanations.</p>
+                <Link to={`/advanced-visualize/${dataset._id}`} className="btn btn-success w-full" onClick={(e) => {
+                  console.log("Navigating to AI visualization", dataset._id);
+                }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  AI-Powered Visualization
+                </Link>
+              </div>
             </div>
           </div>
           

@@ -38,26 +38,6 @@ const DatasetList = () => {
     }
   };
 
-  const handleAnalyzeDataset = async (id) => {
-    try {
-      setDatasets(datasets.map(dataset => 
-        dataset._id === id ? { ...dataset, analyzing: true } : dataset
-      ));
-      
-      const updatedDataset = await datasetService.analyzeDataset(id);
-      
-      setDatasets(datasets.map(dataset => 
-        dataset._id === id ? { ...updatedDataset, analyzing: false } : dataset
-      ));
-    } catch (err) {
-      console.error('Error analyzing dataset:', err);
-      setDatasets(datasets.map(dataset => 
-        dataset._id === id ? { ...dataset, analyzing: false } : dataset
-      ));
-      alert('Failed to analyze dataset. Please try again.');
-    }
-  };
-
   // Filter datasets based on search term
   const filteredDatasets = searchTerm
     ? datasets.filter(
@@ -156,7 +136,6 @@ const DatasetList = () => {
                 key={dataset._id} 
                 dataset={dataset} 
                 onDelete={handleDeleteDataset}
-                onAnalyze={handleAnalyzeDataset}
               />
             ))}
           </div>

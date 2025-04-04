@@ -27,9 +27,6 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-        <footer className="footer">
-          <p>© 2023 DataViz Pro - Data Visualization Made Easy</p>
-        </footer>
       </div>
     </Router>
   )
