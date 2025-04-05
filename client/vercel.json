@@ -22,6 +22,6 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "https://data-viz-pro-backend.vercel.app/api"
+    "VITE_API_URL": "https://data-viz-pro-backend.vercel.app"
   }
 } 
