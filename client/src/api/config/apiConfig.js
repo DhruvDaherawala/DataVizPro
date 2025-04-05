@@ -4,26 +4,16 @@
  */
 
 // Base URL for all API calls
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // API endpoints
 export const ENDPOINTS = {
   // Dataset endpoints
-  DATASETS: '/api/datasets',
-  DATASET_DETAIL: (id) => `/api/datasets/${id}`,
-  DATASET_ANALYZE: (id) => `/api/datasets/${id}/analyze`,
-  UPLOAD: '/api/upload',
+  DATASETS: '/datasets',
+  DATASET_DETAIL: (id) => `/datasets/${id}`,
+  DATASET_ANALYZE: (id) => `/datasets/${id}/analyze`,
+  UPLOAD: '/upload',
 };
-
-// Check if we need to remove the duplicate /api prefix
-// This handles cases where VITE_API_URL already includes /api
-if (API_BASE_URL.endsWith('/api')) {
-  console.log('API_BASE_URL already includes /api, adjusting endpoints');
-  ENDPOINTS.DATASETS = '/datasets';
-  ENDPOINTS.DATASET_DETAIL = (id) => `/datasets/${id}`;
-  ENDPOINTS.DATASET_ANALYZE = (id) => `/datasets/${id}/analyze`;
-  ENDPOINTS.UPLOAD = '/upload';
-}
 
 // Request timeout in milliseconds
 export const TIMEOUT = 30000;
@@ -49,13 +39,6 @@ if (import.meta.env.DEV) {
   console.log('API Configuration:', {
     API_BASE_URL,
     ENV: import.meta.env.MODE
-  });
-} else {
-  // Also log in production to debug the issue
-  console.log('Production API Configuration:', {
-    API_BASE_URL,
-    DATASETS_PATH: ENDPOINTS.DATASETS,
-    DETAIL_PATH: ENDPOINTS.DATASET_DETAIL('example-id')
   });
 }
 

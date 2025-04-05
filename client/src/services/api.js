@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Create axios instance
 const apiClient = axios.create({
@@ -15,7 +15,7 @@ export const datasetService = {
   // Get all datasets
   getAllDatasets: async () => {
     try {
-      const response = await apiClient.get('/datasets');
+      const response = await apiClient.get('/api/datasets');
       return response.data;
     } catch (error) {
       console.error('Error fetching datasets:', error);
