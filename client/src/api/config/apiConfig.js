@@ -15,6 +15,16 @@ export const ENDPOINTS = {
   UPLOAD: '/api/upload',
 };
 
+// Check if we need to remove the duplicate /api prefix
+// This handles cases where VITE_API_URL already includes /api
+if (API_BASE_URL.endsWith('/api')) {
+  console.log('API_BASE_URL already includes /api, adjusting endpoints');
+  ENDPOINTS.DATASETS = '/datasets';
+  ENDPOINTS.DATASET_DETAIL = (id) => `/datasets/${id}`;
+  ENDPOINTS.DATASET_ANALYZE = (id) => `/datasets/${id}/analyze`;
+  ENDPOINTS.UPLOAD = '/upload';
+}
+
 // Request timeout in milliseconds
 export const TIMEOUT = 30000;
 
@@ -39,6 +49,13 @@ if (import.meta.env.DEV) {
   console.log('API Configuration:', {
     API_BASE_URL,
     ENV: import.meta.env.MODE
+  });
+} else {
+  // Also log in production to debug the issue
+  console.log('Production API Configuration:', {
+    API_BASE_URL,
+    DATASETS_PATH: ENDPOINTS.DATASETS,
+    DETAIL_PATH: ENDPOINTS.DATASET_DETAIL('example-id')
   });
 }
 

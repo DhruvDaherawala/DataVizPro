@@ -598,7 +598,7 @@ const AdvancedVisualizer = () => {
   };
   
   const renderMainContent = () => {
-    if (loading) {
+  if (loading) {
       return (
         <div className="loading-container">
           <div className="spinner"></div>
