@@ -9,7 +9,7 @@ const config = {
   fileUploadPath: process.env.FILE_UPLOAD_PATH,
   maxFileSize: process.env.MAX_FILE_SIZE,
   supportedFileTypes: ['csv', 'json'],
-  corsOrigin: process.env.CORS_ORIGIN
+  corsOrigin: process.env.CORS_ORIGIN.split(',')
 };
 
 module.exports = config; 
