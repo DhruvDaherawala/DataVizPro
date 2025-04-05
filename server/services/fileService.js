@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
+const os = require('os');
 
 /**
  * Service for handling file operations
@@ -16,6 +17,10 @@ class FileService {
       const results = [];
       const columns = [];
       let headerParsed = false;
+      
+      if (!fs.existsSync(filePath)) {
+        return reject(new Error(`File not found: ${filePath}`));
+      }
       
       fs.createReadStream(filePath)
         .pipe(csv())
@@ -56,6 +61,10 @@ class FileService {
   static processJSON(filePath) {
     return new Promise((resolve, reject) => {
       try {
+        if (!fs.existsSync(filePath)) {
+          return reject(new Error(`File not found: ${filePath}`));
+        }
+        
         const fileData = fs.readFileSync(filePath, 'utf8');
         const jsonData = JSON.parse(fileData);
         
@@ -120,19 +129,35 @@ class FileService {
    */
   static async deleteFile(filePath) {
     return new Promise((resolve, reject) => {
-      if (fs.existsSync(filePath)) {
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(true);
-          }
-        });
-      } else {
-        resolve(false);
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              // Just log the error but don't reject in Vercel environment
+              if (process.env.VERCEL === '1') {
+                console.error(`Warning: Could not delete file ${filePath}: ${err.message}`);
+                resolve(false);
+              } else {
+                reject(err);
+              }
+            } else {
+              resolve(true);
+            }
+          });
+        } else {
+          resolve(false);
+        }
+      } catch (error) {
+        // Just log the error but don't reject in Vercel environment
+        if (process.env.VERCEL === '1') {
+          console.error(`Warning: Error deleting file ${filePath}: ${error.message}`);
+          resolve(false);
+        } else {
+          reject(error);
+        }
       }
     });
   }
 }
 
-module.exports = FileService; 
+module.exports = FileService;

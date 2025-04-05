@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const { processFile } = require('./utils/fileProcessor');
 const { analyzeData } = require('./utils/dataAnalyzer');
+const os = require('os');
 
 // Load environment variables
 dotenv.config();
@@ -40,9 +41,24 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 // Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+const isVercel = process.env.VERCEL === '1';
+
+// Set upload directory based on environment
+let uploadDir;
+if (isVercel) {
+  // Use /tmp directory for Vercel (serverless) environment
+  uploadDir = path.join(os.tmpdir(), 'uploads');
+} else {
+  // Use regular uploads directory for local development
+  uploadDir = path.join(__dirname, 'uploads');
+}
+
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (error) {
+  console.error(`Warning: Could not create uploads directory: ${error.message}`);
 }
 
 // Configure multer for file uploads

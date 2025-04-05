@@ -13,11 +13,29 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const config = require('../config/config');
+const os = require('os');
 
-// Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, '..', config.fileUploadPath);
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// Determine if we're running on Vercel (production) or locally
+const isVercel = process.env.VERCEL === '1';
+
+// Set upload directory based on environment
+let uploadDir;
+if (isVercel) {
+  // Use /tmp directory for Vercel (serverless) environment
+  uploadDir = path.join(os.tmpdir(), 'uploads');
+} else {
+  // Use regular uploads directory for local development
+  uploadDir = path.join(__dirname, '..', config.fileUploadPath);
+}
+
+// Create uploads directory if it doesn't exist and we're not on Vercel
+// or if we are on Vercel but using the /tmp directory which is writable
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (error) {
+  console.error(`Warning: Could not create uploads directory: ${error.message}`);
 }
 
 // Configure multer storage
