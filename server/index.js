@@ -14,11 +14,11 @@ dotenv.config();
 
 // Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 // Configure CORS
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: process.env.CORS_ORIGIN ,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -29,7 +29,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('Environment:', {
     NODE_ENV: process.env.NODE_ENV,
     PORT: PORT,
-    CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    CORS_ORIGIN: process.env.CORS_ORIGIN,
     MONGODB_URI: process.env.MONGODB_URI ? '(set)' : '(not set)'
   });
 }
@@ -71,7 +71,7 @@ const upload = multer({
 });
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/datavizpro')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.error('MongoDB Connection Error:', err));
 
