@@ -72,21 +72,36 @@ exports.uploadDataset = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/datasets/:id
 // @access  Private
 exports.deleteDataset = asyncHandler(async (req, res, next) => {
-  const dataset = await Dataset.findById(req.params.id);
-  
-  if (!dataset) {
-    return next(new ErrorResponse(`Dataset not found with id of ${req.params.id}`, 404));
+  try {
+    const dataset = await Dataset.findById(req.params.id);
+    
+    if (!dataset) {
+      return next(new ErrorResponse(`Dataset not found with id of ${req.params.id}`, 404));
+    }
+    
+    // Delete the file from the filesystem - but don't let file issues block dataset deletion
+    try {
+      await FileService.deleteFile(dataset.filePath);
+    } catch (fileError) {
+      console.error(`Error deleting file: ${fileError.message}`);
+      // Continue with deletion of database record even if file deletion fails
+    }
+    
+    // Use deleteOne() instead of the deprecated remove()
+    const result = await Dataset.deleteOne({ _id: req.params.id });
+    
+    if (result.deletedCount === 0) {
+      return next(new ErrorResponse(`Failed to delete dataset with id ${req.params.id}`, 500));
+    }
+    
+    res.status(200).json({ 
+      success: true,
+      message: 'Dataset deleted successfully' 
+    });
+  } catch (err) {
+    console.error(`Error in deleteDataset controller: ${err.message}`);
+    return next(new ErrorResponse('Server error while deleting dataset', 500));
   }
-  
-  // Delete the file from the filesystem
-  await FileService.deleteFile(dataset.filePath);
-  
-  await dataset.remove();
-  
-  res.status(200).json({ 
-    success: true,
-    message: 'Dataset deleted successfully' 
-  });
 });
 
 // @desc    Analyze dataset

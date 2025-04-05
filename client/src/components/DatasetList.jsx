@@ -48,14 +48,58 @@ const DatasetList = () => {
   };
 
   const handleDeleteDataset = async (id) => {
-    if (window.confirm('Are you sure you want to delete this dataset? This action cannot be undone.')) {
-      try {
+    try {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this action!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it!'
+      });
+      
+      if (result.isConfirmed) {
+        // Show loading state
+        Swal.fire({
+          title: 'Deleting...',
+          text: 'Please wait while we delete the dataset',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
         await datasetService.deleteDataset(id);
+        
+        // Close loading dialog
+        Swal.close();
+        
+        // Remove the deleted dataset from the state
         setDatasets(datasets.filter(dataset => dataset._id !== id));
-      } catch (err) {
-        console.error('Error deleting dataset:', err);
-        alert('Failed to delete dataset. Please try again.');
+        toast.success('Dataset deleted successfully');
       }
+    } catch (err) {
+      console.error('Error deleting dataset:', err);
+      
+      // Show more detailed error message to the user
+      let errorMessage = 'Failed to delete dataset. Please try again.';
+      if (err.status === 404) {
+        errorMessage = 'Dataset not found. It may have been already deleted.';
+      } else if (err.status === 500) {
+        errorMessage = 'Server error while deleting dataset. Please try again later.';
+      } else if (err.data && err.data.error) {
+        errorMessage = err.data.error;
+      }
+      
+      // Close any open Swal dialog
+      Swal.close();
+      
+      // Show error toast
+      toast.error(errorMessage);
+      
+      // Refresh datasets list to ensure UI state is consistent
+      await fetchDatasets();
     }
   };
 

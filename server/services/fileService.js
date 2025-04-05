@@ -128,33 +128,34 @@ class FileService {
    * @returns {Promise<boolean>} - True if file was deleted, false otherwise
    */
   static async deleteFile(filePath) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       try {
+        // If filePath is not provided or null, resolve false
+        if (!filePath) {
+          console.log('No file path provided for deletion');
+          return resolve(false);
+        }
+
+        // Check if file exists
         if (fs.existsSync(filePath)) {
           fs.unlink(filePath, (err) => {
             if (err) {
-              // Just log the error but don't reject in Vercel environment
-              if (process.env.VERCEL === '1') {
-                console.error(`Warning: Could not delete file ${filePath}: ${err.message}`);
-                resolve(false);
-              } else {
-                reject(err);
-              }
+              console.error(`Warning: Could not delete file ${filePath}: ${err.message}`);
+              // Resolve with false instead of rejecting
+              resolve(false);
             } else {
+              console.log(`Successfully deleted file: ${filePath}`);
               resolve(true);
             }
           });
         } else {
+          console.log(`File does not exist: ${filePath}`);
           resolve(false);
         }
       } catch (error) {
-        // Just log the error but don't reject in Vercel environment
-        if (process.env.VERCEL === '1') {
-          console.error(`Warning: Error deleting file ${filePath}: ${error.message}`);
-          resolve(false);
-        } else {
-          reject(error);
-        }
+        // Log the error but don't reject - we don't want file deletion issues to prevent dataset deletion
+        console.error(`Error in file deletion process: ${error.message}`);
+        resolve(false);
       }
     });
   }

@@ -51,6 +51,21 @@ export const datasetService = {
   },
 
   /**
+   * Delete a dataset by ID
+   * @param {string} id - The dataset ID
+   * @returns {Promise} - Promise that resolves to the deletion response
+   */
+  deleteDataset: async (id) => {
+    try {
+      const response = await httpClient.delete(ENDPOINTS.DATASET_DETAIL(id));
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting dataset ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
    * Analyze a dataset
    * @param {string} id - The dataset ID
    * @returns {Promise} - Promise that resolves to the analysis results

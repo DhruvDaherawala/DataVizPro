@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { datasetService } from '../api';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import '../styles/DatasetDetail.css';
 
 const DatasetDetail = () => {
@@ -63,14 +65,54 @@ const DatasetDetail = () => {
   const handleDeleteDataset = async () => {
     if (!dataset) return;
     
-    if (window.confirm('Are you sure you want to delete this dataset? This action cannot be undone.')) {
-      try {
-        await datasetService.deleteDataset(id);
+    try {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this action!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it!'
+      });
+      
+      if (result.isConfirmed) {
+        // Show loading state
+        Swal.fire({
+          title: 'Deleting...',
+          text: 'Please wait while we delete the dataset',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        const response = await datasetService.deleteDataset(id);
+        
+        // Close loading dialog
+        Swal.close();
+        
+        toast.success('Dataset deleted successfully');
         navigate('/datasets');
-      } catch (err) {
-        console.error('Error deleting dataset:', err);
-        alert('Failed to delete dataset. Please try again.');
       }
+    } catch (err) {
+      console.error('Error deleting dataset:', err);
+      
+      // Show more detailed error message to the user
+      let errorMessage = 'Failed to delete dataset. Please try again.';
+      if (err.status === 404) {
+        errorMessage = 'Dataset not found. It may have been already deleted.';
+      } else if (err.status === 500) {
+        errorMessage = 'Server error while deleting dataset. Please try again later.';
+      } else if (err.data && err.data.error) {
+        errorMessage = err.data.error;
+      }
+      
+      // Close any open Swal dialog
+      Swal.close();
+      
+      // Show error toast
+      toast.error(errorMessage);
     }
   };
 
