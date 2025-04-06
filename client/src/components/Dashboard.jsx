@@ -12,6 +12,14 @@ const Dashboard = () => {
     recentlyAdded: 0
   });
 
+  // Format file size into a readable string
+  const formatFileSize = (sizeInBytes) => {
+    if (!sizeInBytes || isNaN(sizeInBytes)) return 'Unknown';
+    if (sizeInBytes < 1024) return `${sizeInBytes} B`;
+    if (sizeInBytes < 1024 * 1024) return `${(sizeInBytes / 1024).toFixed(1)} KB`;
+    return `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
+  };
+
   useEffect(() => {
     const fetchDatasets = async () => {
       try {
@@ -239,7 +247,7 @@ const Dashboard = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" className="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
-                        <span>{(dataset.fileSize / 1024).toFixed(1)} KB</span>
+                        <span>{formatFileSize(dataset.fileSize)}</span>
                       </div>
                     </div>
                   </div>

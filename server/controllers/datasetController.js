@@ -46,7 +46,8 @@ exports.uploadDataset = asyncHandler(async (req, res, next) => {
     name: req.body.name || req.file.originalname,
     description: req.body.description || '',
     filePath: req.file.path,
-    fileType: path.extname(req.file.originalname).substring(1)
+    fileType: path.extname(req.file.originalname).substring(1),
+    fileSize: req.file.size // Set file size from the uploaded file
   });
 
   // Process the file to extract columns and sample data

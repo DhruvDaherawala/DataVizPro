@@ -28,9 +28,9 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   max-width: 100%;
-  overflow: hidden;
+  overflow-y: auto;
   background-color: #f5f7fa;
   color: var(--text-color);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -52,6 +52,8 @@
   box-shadow: var(--box-shadow);
   z-index: 10;
   min-height: 70px;
+  position: sticky;
+  top: 0;
 }
 
 .header-title {
@@ -127,11 +129,11 @@
 /* Content Area */
 .visualizer-content {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 70px);
+  min-height: calc(100vh - 70px);
 }
 
 /* Dashboard */
@@ -1689,32 +1691,18 @@
 }
 
 .ai-dashboard-content {
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 20px;
-  height: calc(100vh - 250px);
+  display: flex;
+  flex: 1;
+  overflow: auto;
+  gap: var(--spacing-lg);
 }
 
 .ai-insights-list {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.ai-insights-list h2 {
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-.insights-container {
-  overflow-y: auto;
   flex: 1;
-  padding-right: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+  padding-right: var(--spacing-md);
+  padding-bottom: var(--spacing-lg);
 }
 
 .ai-insight-card {
@@ -1799,12 +1787,13 @@
 }
 
 .ai-visualization-panel {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+  flex: 1;
+  background-color: white;
+  border-radius: var(--panel-border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--box-shadow);
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
 }
 
 .ai-visualization-panel h2 {
