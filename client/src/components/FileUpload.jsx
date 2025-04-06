@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { datasetService } from '../api';
+import Swal from 'sweetalert2';
 import '../styles/FileUpload.css';
 
 const FileUpload = () => {
@@ -79,6 +80,23 @@ const FileUpload = () => {
     
     setLoading(true);
     setError(null);
+    setUploadProgress(0);
+    
+    // Show loading progress with SweetAlert2
+    Swal.fire({
+      title: 'Uploading...',
+      html: `
+        <div class="swal-upload-progress-container">
+          <div class="swal-upload-progress-text">Preparing dataset...</div>
+          <div class="swal-progress-bar-container">
+            <div class="swal-progress-bar" style="width: 0%"></div>
+          </div>
+          <div class="swal-upload-progress-percentage">0%</div>
+        </div>
+      `,
+      allowOutsideClick: false,
+      showConfirmButton: false
+    });
     
     const formData = new FormData();
     formData.append('file', file);
@@ -86,24 +104,70 @@ const FileUpload = () => {
     formData.append('description', description);
     
     try {
-      const response = await datasetService.uploadDataset(formData);
+      // Track upload progress
+      const onUploadProgress = (progressData) => {
+        const { percentage, completed } = progressData;
+        setUploadProgress(percentage);
+        
+        // Update SweetAlert2 progress
+        const progressBar = document.querySelector('.swal-progress-bar');
+        const progressText = document.querySelector('.swal-upload-progress-text');
+        const progressPercentage = document.querySelector('.swal-upload-progress-percentage');
+        
+        if (progressBar && progressText && progressPercentage) {
+          progressBar.style.width = `${percentage}%`;
+          progressPercentage.textContent = `${percentage}%`;
+          
+          if (!completed) {
+            progressText.textContent = 'Uploading dataset...';
+          } else {
+            progressText.textContent = 'Processing dataset...';
+          }
+        }
+      };
+      
+      const response = await datasetService.uploadDataset(formData, onUploadProgress);
       console.log('Upload successful:', response);
       
+      // Close the loading dialog
+      Swal.close();
+      
+      // Show success message
+      await Swal.fire({
+        icon: 'success',
+        title: 'Upload Successful!',
+        text: `Your dataset "${name}" has been uploaded successfully.`,
+        confirmButtonColor: '#3b82f6',
+        timer: 3000,
+        timerProgressBar: true
+      });
+      
       // Add a small delay to ensure the server has processed the upload
-      setTimeout(() => {
-        setLoading(false);
-        // Navigate to datasets page with refresh indicator
-        navigate('/datasets', { 
-          state: { 
-            refreshNeeded: true,
-            uploadSuccess: true 
-          },
-          replace: true
-        });
-      }, 500);
+      setLoading(false);
+      
+      // Navigate to datasets page with refresh indicator
+      navigate('/datasets', { 
+        state: { 
+          refreshNeeded: true,
+          uploadSuccess: true 
+        },
+        replace: true
+      });
       
     } catch (error) {
       console.error('Upload failed:', error);
+      
+      // Close loading dialog
+      Swal.close();
+      
+      // Show error message with SweetAlert2
+      Swal.fire({
+        icon: 'error',
+        title: 'Upload Failed',
+        text: error.response?.data?.message || 'Failed to upload file. Please try again.',
+        confirmButtonColor: '#ef4444'
+      });
+      
       setError(error.response?.data?.message || 'Failed to upload file. Please try again.');
       setLoading(false);
     }
@@ -253,7 +317,7 @@ const FileUpload = () => {
                   <span className="text-sm text-gray font-medium">Uploading...</span>
                   <span className="text-sm text-gray font-medium">{uploadProgress}%</span>
                 </div>
-                <div className="progress-bar bg-gray-200 h-2 rounded-full overflow-hidden">
+                <div className="file-upload-progress-bar bg-gray-200 h-2 rounded-full overflow-hidden">
                   <div 
                     className="bg-primary h-full rounded-full" 
                     style={{ width: `${uploadProgress}%` }}

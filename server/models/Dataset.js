@@ -32,6 +32,10 @@ const DatasetSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     default: {}
   },
+  analyzed: {
+    type: Boolean,
+    default: false
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

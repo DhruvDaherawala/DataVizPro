@@ -105,12 +105,29 @@ class HttpClient {
    * @returns {Promise} - The axios promise
    */
   upload(url, formData, onUploadProgress = null) {
-    return this.axiosInstance.post(url, formData, {
+    const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress,
-    });
+      }
+    };
+    
+    // Add progress tracking if provided
+    if (onUploadProgress && typeof onUploadProgress === 'function') {
+      config.onUploadProgress = (progressEvent) => {
+        // Calculate the upload percentage
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        
+        // Call the progress callback with useful information
+        onUploadProgress({
+          loaded: progressEvent.loaded,
+          total: progressEvent.total,
+          percentage: percentCompleted,
+          completed: percentCompleted === 100
+        });
+      };
+    }
+    
+    return this.axiosInstance.post(url, formData, config);
   }
 }
 
