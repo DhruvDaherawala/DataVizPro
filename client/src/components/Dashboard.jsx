@@ -12,11 +12,21 @@ const Dashboard = () => {
     recentlyAdded: 0
   });
 
+  // Format file size into a readable string
+  const formatFileSize = (sizeInBytes) => {
+    if (!sizeInBytes || isNaN(sizeInBytes)) return 'Unknown';
+    if (sizeInBytes < 1024) return `${sizeInBytes} B`;
+    if (sizeInBytes < 1024 * 1024) return `${(sizeInBytes / 1024).toFixed(1)} KB`;
+    return `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
+  };
+
   useEffect(() => {
     const fetchDatasets = async () => {
       try {
         setLoading(true);
         const data = await datasetService.getAllDatasets();
+        // Ensure we have the latest data with analysis status
+        console.log('Datasets fetched:', data);
         setDatasets(data);
         
         // Calculate stats
@@ -41,6 +51,33 @@ const Dashboard = () => {
     fetchDatasets();
   }, []);
 
+  // Add a refresh function that can be called manually
+  const refreshDashboard = async () => {
+    try {
+      setLoading(true);
+      const data = await datasetService.getAllDatasets();
+      console.log('Refreshed datasets:', data);
+      
+      setDatasets(data);
+      
+      // Recalculate stats
+      setStats({
+        total: data.length,
+        analyzed: data.filter(dataset => dataset.analyzed).length,
+        recentlyAdded: data.filter(dataset => {
+          const oneWeekAgo = new Date();
+          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+          return new Date(dataset.createdAt) > oneWeekAgo;
+        }).length
+      });
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error refreshing datasets:', err);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="dashboard py-4">
       <div className="container">
@@ -49,12 +86,24 @@ const Dashboard = () => {
             <h1 className="text-3xl font-semibold">Dashboard</h1>
             <p className="text-gray">Welcome to DataViz Pro. Visualize and analyze your data with ease.</p>
           </div>
-          <Link to="/upload" className="btn btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-            Upload Dataset
-          </Link>
+          <div className="flex gap-4">
+            <button 
+              onClick={refreshDashboard} 
+              className="btn bg-secondary text-white px-4 py-2 rounded-md flex items-center"
+              disabled={loading}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Refresh
+            </button>
+            <Link to="/upload" className="btn btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              Upload Dataset
+            </Link>
+          </div>
         </div>
 
         <div className="stats-grid grid grid-cols-3 gap-4 mb-5">
@@ -198,7 +247,7 @@ const Dashboard = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" className="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
-                        <span>{(dataset.fileSize / 1024).toFixed(1)} KB</span>
+                        <span>{formatFileSize(dataset.fileSize)}</span>
                       </div>
                     </div>
                   </div>
@@ -212,12 +261,21 @@ const Dashboard = () => {
                       View
                     </Link>
                     
-                    <Link to={`/visualize/${dataset._id}`} className="btn btn-secondary">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
-                      Visualize
-                    </Link>
+                    {dataset.analyzed ? (
+                      <Link to={`/visualize/${dataset._id}`} className="btn btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Visualize
+                      </Link>
+                    ) : (
+                      <Link to={`/datasets/${dataset._id}`} className="btn bg-warning text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Analyze
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}

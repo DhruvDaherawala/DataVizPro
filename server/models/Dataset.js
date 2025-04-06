@@ -20,6 +20,10 @@ const DatasetSchema = new mongoose.Schema({
     required: [true, 'File type is required'],
     enum: ['csv', 'json']
   },
+  fileSize: {
+    type: Number,
+    default: 0
+  },
   columns: {
     type: [String],
     default: []
@@ -31,6 +35,10 @@ const DatasetSchema = new mongoose.Schema({
   metadata: {
     type: mongoose.Schema.Types.Mixed,
     default: {}
+  },
+  analyzed: {
+    type: Boolean,
+    default: false
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,

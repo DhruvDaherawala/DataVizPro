@@ -1480,7 +1480,7 @@ textarea.form-control {
   margin-right: 0.75rem;
 }
 
-.progress-bar {
+.progress-bar:not(.swal-progress-bar) {
   background-color: #e5e7eb;
   height: 0.5rem;
   border-radius: 9999px;

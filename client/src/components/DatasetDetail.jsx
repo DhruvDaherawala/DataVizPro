@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { datasetService } from '../api';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import '../styles/DatasetDetail.css';
 
 const DatasetDetail = () => {
@@ -63,14 +65,54 @@ const DatasetDetail = () => {
   const handleDeleteDataset = async () => {
     if (!dataset) return;
     
-    if (window.confirm('Are you sure you want to delete this dataset? This action cannot be undone.')) {
-      try {
-        await datasetService.deleteDataset(id);
+    try {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this action!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it!'
+      });
+      
+      if (result.isConfirmed) {
+        // Show loading state
+        Swal.fire({
+          title: 'Deleting...',
+          text: 'Please wait while we delete the dataset',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        const response = await datasetService.deleteDataset(id);
+        
+        // Close loading dialog
+        Swal.close();
+        
+        toast.success('Dataset deleted successfully');
         navigate('/datasets');
-      } catch (err) {
-        console.error('Error deleting dataset:', err);
-        alert('Failed to delete dataset. Please try again.');
       }
+    } catch (err) {
+      console.error('Error deleting dataset:', err);
+      
+      // Show more detailed error message to the user
+      let errorMessage = 'Failed to delete dataset. Please try again.';
+      if (err.status === 404) {
+        errorMessage = 'Dataset not found. It may have been already deleted.';
+      } else if (err.status === 500) {
+        errorMessage = 'Server error while deleting dataset. Please try again later.';
+      } else if (err.data && err.data.error) {
+        errorMessage = err.data.error;
+      }
+      
+      // Close any open Swal dialog
+      Swal.close();
+      
+      // Show error toast
+      toast.error(errorMessage);
     }
   };
 
@@ -249,8 +291,11 @@ const DatasetDetail = () => {
           </div>
           
           <div className="mt-4 flex justify-end">
-            <button onClick={handleDeleteDataset} className="btn btn-danger">
-              <svg xmlns="http://www.w3.org/2000/svg" className="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button 
+              onClick={handleDeleteDataset} 
+              className="inline-flex items-center px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
               Delete Dataset

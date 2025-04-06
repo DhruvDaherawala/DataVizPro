@@ -148,4 +148,44 @@
   .file-name {
     max-width: 200px;
   }
+}
+
+/* Sweet Alert Custom Styles - Using unique class names to avoid conflicts */
+.swal-upload-progress-container {
+  padding: 1rem 0;
+}
+
+.swal-progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.swal-progress-bar {
+  height: 100%;
+  background-color: #3b82f6;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.swal-upload-progress-text {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.swal-upload-progress-percentage {
+  font-size: 0.9rem;
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.file-upload-progress-bar {
+  background-color: #e5e7eb;
+  height: 0.5rem;
+  border-radius: 9999px;
+  overflow: hidden;
 } 
