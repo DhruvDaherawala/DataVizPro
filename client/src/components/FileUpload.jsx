@@ -351,7 +351,7 @@ const FileUpload = () => {
             <li>Make sure your CSV or JSON file is properly formatted</li>
             <li>For CSV files, the first row should contain column headers</li>
             <li>For JSON files, use an array of objects with consistent properties</li>
-            <li>The maximum file size is 10MB</li>
+            <li>The maximum file size is 2MB</li>
             <li>Remove any sensitive or personal information before uploading</li>
             <li>Unicode (UTF-8) encoding is recommended for best results</li>
           </ul>
