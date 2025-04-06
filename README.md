@@ -71,6 +71,3 @@ DataViz Pro is a web-based tool that helps you visualize and analyze data withou
 3. **Visualize Data**: Select a dataset to view detailed analysis and visualizations
 4. **Customize Charts**: Filter data and try different chart types for your visualization
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
