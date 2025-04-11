@@ -320,7 +320,10 @@
 .sidebar-panel .panel-content {
   padding: 16px;
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: 500px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Chart Area */
@@ -2081,10 +2084,12 @@
 
 /* Enhanced Chart Creator */
 .enhanced-chart-creator {
-  width: 450px;
-  min-width: 450px;
+  width: 350px;
+  min-width: 350px;
+  max-width: 350px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--primary-light);
+  overflow-x: hidden;
 }
 
 .enhanced-chart-creator .panel-header {
@@ -2100,18 +2105,24 @@
 
 .enhanced-chart-creator .panel-content {
   padding: var(--spacing-lg);
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .enhanced-chart-creator .chart-type-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: all var(--transition-speed);
   border: 1px solid var(--border-color);
   margin-bottom: var(--spacing-sm);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .enhanced-chart-creator .chart-type-option small {
@@ -2119,12 +2130,16 @@
   font-size: 0.75rem;
   margin-top: 0.25rem;
   text-align: center;
+  width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .enhanced-chart-creator .chart-type-selector {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  width: 100%;
 }
 
 .enhanced-chart-creator .form-section h4 {
@@ -2133,6 +2148,18 @@
   border-bottom: 2px solid var(--primary-light);
   padding-bottom: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.enhanced-chart-creator .form-group {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.enhanced-chart-creator .form-control {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .btn-block {
@@ -2147,8 +2174,9 @@
   }
   
   .enhanced-chart-creator {
-    width: 400px;
-    min-width: 400px;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
   }
 }
 
