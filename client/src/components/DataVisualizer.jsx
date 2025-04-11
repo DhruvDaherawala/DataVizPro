@@ -529,30 +529,11 @@ const DataVisualizer = () => {
   };
 
   const generateAllChartsData = () => {
-    if (!analysis || !filteredData.length) return;
+    // Initialize with empty charts - no automatic suggestions
+    setAvailableCharts([]);
     
-    const allChartsData = analysis.chartRecommendations.map(chart => {
-      return generateSingleChartData(chart);
-    }).filter(chart => chart !== null);
-    
-    setAvailableCharts(allChartsData);
-    
-    // Initialize with first chart selected
-    if (allChartsData.length > 0 && selectedChartIds.length === 0) {
-      setSelectedChartIds([allChartsData[0].id]);
-    }
-
-    // Initialize customizations 
-    const initialCustomizations = {};
-    allChartsData.forEach(chart => {
-      initialCustomizations[chart.id] = {
-        title: chart.options.plugins.title.text,
-        backgroundColor: chart.type === 'pie' ? null : chart.data.datasets[0].backgroundColor,
-        borderColor: chart.type === 'pie' ? null : chart.data.datasets[0].borderColor,
-        showLegend: chart.options.plugins.legend?.display ?? true
-      };
-    });
-    setCustomizations(initialCustomizations);
+    // Initialize customizations with empty object
+    setCustomizations({});
   };
 
   const generateSingleChartData = (chartInfo) => {
@@ -1372,6 +1353,90 @@ const DataVisualizer = () => {
     }
   };
 
+  // Enhanced function to render chart creation panel with more prominence
+  const renderChartCreationPanel = () => {
+    return (
+      <div className="chart-creation-panel">
+        <div className="panel-header">
+          <h3>Create Custom Chart</h3>
+          <div className="sidebar-actions">
+            <button 
+              className="btn btn-sm btn-primary"
+              onClick={toggleChartCreator}
+              title="Create Custom Chart"
+            >
+              <span className="material-icons">add_chart</span> New Chart
+            </button>
+          </div>
+        </div>
+        
+        <div className="panel-content">
+          <div className="section-divider">
+            <span>Your Created Charts</span>
+          </div>
+          
+          {availableCharts.length === 0 ? (
+            <div className="no-charts-message">
+              <div className="message-icon">📊</div>
+              <p>No charts created yet. Click the "New Chart" button to create your first visualization.</p>
+            </div>
+          ) : (
+            <div className="chart-list">
+              <div className="chart-list-header">
+                <h4>My Charts</h4>
+                <button 
+                  onClick={toggleAllCharts} 
+                  className="btn btn-sm btn-outline-primary"
+                  title="Select/Deselect All Charts"
+                >
+                  {selectedChartIds.length === availableCharts.length ? 'Deselect All' : 'Select All'}
+                </button>
+              </div>
+            
+              {availableCharts.map(chart => (
+                <div 
+                  key={chart.id} 
+                  className={`chart-list-item ${selectedChartIds.includes(chart.id) ? 'selected' : ''}`}
+                  onClick={() => toggleChartSelection(chart.id)}
+                >
+                  <div className="chart-item-header">
+                    <div className="chart-icon">
+                      <span className="material-icons">
+                        {chart.type === 'bar' ? 'bar_chart' : 
+                         chart.type === 'line' ? 'show_chart' : 
+                         chart.type === 'pie' ? 'pie_chart' : 'scatter_plot'}
+                      </span>
+                    </div>
+                    <div className="chart-info">
+                      <div className="chart-title">{customizations[chart.id]?.title || chart.title || `${chart.type.charAt(0).toUpperCase() + chart.type.slice(1)} Chart`}</div>
+                      <div className="chart-subtitle">{chart.subtitle || chart.columns.join(', ')}</div>
+                    </div>
+                  </div>
+                  <div className="chart-actions">
+                    <button 
+                      className="btn-icon" 
+                      onClick={(e) => { e.stopPropagation(); openChartCustomization(chart.id); }}
+                      title="Customize Chart"
+                    >
+                      <span className="material-icons">edit</span>
+                    </button>
+                    <button 
+                      className="btn-icon" 
+                      onClick={(e) => { e.stopPropagation(); removeChart(chart.id); }}
+                      title="Remove Chart"
+                    >
+                      <span className="material-icons">delete</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   // Render the main visualization dashboard
   const renderVisualizationDashboard = () => {
     return (
@@ -1417,22 +1482,15 @@ const DataVisualizer = () => {
           
           <div className="toolbar-section">
             <button 
-              className={`toolbar-btn ${showAIRecommendations ? 'primary' : ''}`}
-              onClick={toggleAIRecommendations}
-              title="AI Recommended Charts"
-            >
-              <span className="material-icons">smart_toy</span>
-              AI Suggestions
-            </button>
-            
-            <button 
-              className={`toolbar-btn ${chartCreator.open ? 'primary' : ''}`}
+              className={`toolbar-btn primary ${chartCreator.open ? 'active' : ''}`}
               onClick={toggleChartCreator}
               title="Create Custom Chart"
             >
               <span className="material-icons">add_chart</span>
-              New Chart
+              Create Custom Chart
             </button>
+            
+            <div className="divider"></div>
             
             <button 
               className={`toolbar-btn ${filterBarOpen ? 'primary' : ''}`}
@@ -1446,14 +1504,14 @@ const DataVisualizer = () => {
               )}
             </button>
           </div>
-          </div>
+        </div>
           
         {/* Main content with sidebars and chart area */}
         <div className="visualization-main-content">
           {/* Chart display area */}
           <div className="chart-area">
-            {/* Chart list sidebar */}
-            {renderChartListSidebar()}
+            {/* Chart creation panel (replacing sidebar) */}
+            {renderChartCreationPanel()}
             
             {/* Chart display area */}
             <div 
@@ -1601,9 +1659,9 @@ const DataVisualizer = () => {
             </div>
           )}
           
-          {/* Chart Creator Panel */}
+          {/* Chart Creator Panel - Enhanced version */}
           {chartCreator.open && (
-                <div className="sidebar-panel">
+                <div className="sidebar-panel enhanced-chart-creator">
               <div className="panel-header">
                 <h3>Create Custom Chart</h3>
                 <button 
@@ -1614,52 +1672,56 @@ const DataVisualizer = () => {
                 </button>
               </div>
               
-                  <div className="panel-content">
+              <div className="panel-content">
                 <div className="form-section">
-                      <h4>Chart Type</h4>
-                      <div className="chart-type-selector">
-                        <div 
-                          className={`chart-type-option ${chartCreator.type === 'bar' ? 'selected' : ''}`}
-                          onClick={() => setChartCreator({...chartCreator, type: 'bar'})}
-                        >
-                          <span className="material-icons">bar_chart</span>
-                          <span>Bar</span>
-                        </div>
-                        <div 
-                          className={`chart-type-option ${chartCreator.type === 'line' ? 'selected' : ''}`}
-                          onClick={() => setChartCreator({...chartCreator, type: 'line'})}
-                        >
-                          <span className="material-icons">show_chart</span>
-                          <span>Line</span>
-                        </div>
-                        <div 
-                          className={`chart-type-option ${chartCreator.type === 'pie' ? 'selected' : ''}`}
-                          onClick={() => setChartCreator({...chartCreator, type: 'pie'})}
-                        >
-                          <span className="material-icons">pie_chart</span>
-                          <span>Pie</span>
-                        </div>
-                        <div 
-                          className={`chart-type-option ${chartCreator.type === 'scatter' ? 'selected' : ''}`}
-                          onClick={() => setChartCreator({...chartCreator, type: 'scatter'})}
-                        >
-                          <span className="material-icons">scatter_plot</span>
-                          <span>Scatter</span>
-                        </div>
-                      </div>
+                  <h4>Chart Type</h4>
+                  <div className="chart-type-selector">
+                    <div 
+                      className={`chart-type-option ${chartCreator.type === 'bar' ? 'selected' : ''}`}
+                      onClick={() => setChartCreator({...chartCreator, type: 'bar'})}
+                    >
+                      <span className="material-icons">bar_chart</span>
+                      <span>Bar Chart</span>
+                      <small>Compare values across categories</small>
                     </div>
-                    
-                    <div className="form-section">
-                      <h4>Chart Details</h4>
-                    <div className="form-group">
-                      <label>Chart Title</label>
-                      <input 
-                        type="text" 
-                        value={chartCreator.title} 
-                        onChange={e => setChartCreator({...chartCreator, title: e.target.value})}
-                        className="form-control"
-                        placeholder="My Custom Chart"
-                      />
+                    <div 
+                      className={`chart-type-option ${chartCreator.type === 'line' ? 'selected' : ''}`}
+                      onClick={() => setChartCreator({...chartCreator, type: 'line'})}
+                    >
+                      <span className="material-icons">show_chart</span>
+                      <span>Line Chart</span>
+                      <small>Show trends over time</small>
+                    </div>
+                    <div 
+                      className={`chart-type-option ${chartCreator.type === 'pie' ? 'selected' : ''}`}
+                      onClick={() => setChartCreator({...chartCreator, type: 'pie'})}
+                    >
+                      <span className="material-icons">pie_chart</span>
+                      <span>Pie Chart</span>
+                      <small>Show composition or proportion</small>
+                    </div>
+                    <div 
+                      className={`chart-type-option ${chartCreator.type === 'scatter' ? 'selected' : ''}`}
+                      onClick={() => setChartCreator({...chartCreator, type: 'scatter'})}
+                    >
+                      <span className="material-icons">scatter_plot</span>
+                      <span>Scatter Plot</span>
+                      <small>Explore relationships between variables</small>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="form-section">
+                  <h4>Chart Details</h4>
+                  <div className="form-group">
+                    <label>Chart Title</label>
+                    <input 
+                      type="text" 
+                      value={chartCreator.title} 
+                      onChange={e => setChartCreator({...chartCreator, title: e.target.value})}
+                      className="form-control"
+                      placeholder="My Custom Chart"
+                    />
                   </div>
                 </div>
                 
